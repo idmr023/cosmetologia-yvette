@@ -11,6 +11,7 @@ const nextConfig = {
       { source: "/api/auth/register", destination: `${up}/api/auth/register` },
       { source: "/api/auth/refresh", destination: `${up}/api/auth/refresh` },
       { source: "/api/auth/recuperar/:path*", destination: `${up}/api/auth/recuperar/:path*` },
+      { source: "/api/auth/mfa-status", destination: `${up}/api/auth/mfa/check` },
       { source: "/api/auth/mfa/:path*", destination: `${up}/api/auth/mfa/:path*` },
       // Express business routes
       { source: "/api/appointments/:path*", destination: `${up}/api/appointments/:path*` },

@@ -72,12 +72,29 @@ const toolImpl: Record<string, (args: Record<string, unknown>) => Promise<unknow
 };
 
 let conversationHistory: Content[] = [];
+const MAX_HISTORY = 6;
+
+function trimHistory(): void {
+  const pairs = conversationHistory.filter((m) => m.role === "user" || m.role === "model").length;
+  while (pairs > MAX_HISTORY) {
+    const firstUser = conversationHistory.findIndex((m) => m.role === "user");
+    if (firstUser === -1) break;
+    const firstModel = conversationHistory.findIndex((m) => m.role === "model" && m.role !== "function");
+    if (firstModel === -1) { conversationHistory.splice(firstUser, 1); break; }
+    if (firstModel > firstUser) {
+      conversationHistory.splice(firstUser, firstModel - firstUser + 1);
+    } else {
+      conversationHistory.splice(firstUser, 1);
+    }
+  }
+}
 
 export function resetConversation(): void {
   conversationHistory = [];
 }
 
 export async function processMessage(userMessage: string): Promise<string> {
+  trimHistory();
   conversationHistory.push({ role: "user", parts: [createPartFromText(userMessage)] });
 
   for (let turn = 0; turn < 5; turn++) {

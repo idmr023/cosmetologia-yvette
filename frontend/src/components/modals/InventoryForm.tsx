@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Save, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { apiFetch } from "@/lib/api";
 
 interface InventoryFormProps {
   initial?: {
@@ -36,6 +37,25 @@ export function InventoryForm({ initial, onSave, onCancel, loading }: InventoryF
   const [minStock, setMinStock] = useState(String(initial?.minStock ?? "0"));
   const [unitPrice, setUnitPrice] = useState(initial?.unitPrice ?? "");
   const [supplier, setSupplier] = useState(initial?.supplier ?? "");
+  const [existingCategories, setExistingCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    apiFetch("/api/inventory")
+      .then((r) => r.json())
+      .then((data) => {
+        const items = data.data ?? data;
+        if (Array.isArray(items)) {
+          const cats = [...new Set(items.map((i: { category?: string }) => i.category).filter(Boolean))] as string[];
+          setExistingCategories(cats);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const filteredSuggestions = useMemo(() => {
+    if (!category || existingCategories.length === 0) return [];
+    return existingCategories.filter((c) => c.toLowerCase().includes(category.toLowerCase()) && c !== category);
+  }, [category, existingCategories]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -94,13 +114,29 @@ export function InventoryForm({ initial, onSave, onCancel, loading }: InventoryF
         </div>
       </div>
 
-      <Input
-        id="i-category"
-        label="Categoría"
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-        placeholder="Ej: Cuidado capilar"
-      />
+      <div className="flex flex-col gap-1">
+        <Input
+          id="i-category"
+          label="Categoría"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          placeholder="Ej: Cuidado capilar"
+        />
+        {filteredSuggestions.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {filteredSuggestions.slice(0, 5).map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => setCategory(c)}
+                className="rounded-full border border-neutral-200 bg-white px-2.5 py-1 text-xs text-neutral-500 hover:border-gold hover:text-gold"
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
       <div className="grid grid-cols-2 gap-3">
         <Input
@@ -123,16 +159,22 @@ export function InventoryForm({ initial, onSave, onCancel, loading }: InventoryF
         />
       </div>
 
-      <Input
-        id="i-price"
-        label="Precio unitario (S/)"
-        type="number"
-        min="0"
-        step="0.5"
-        value={unitPrice}
-        onChange={(e) => setUnitPrice(e.target.value)}
-        placeholder="0.00"
-      />
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium text-neutral-700">Precio unitario</label>
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-neutral-500">S/</span>
+          <input
+            id="i-price"
+            type="number"
+            min="0"
+            step="0.5"
+            value={unitPrice}
+            onChange={(e) => setUnitPrice(e.target.value)}
+            placeholder="0.00"
+            className="min-h-touch w-full rounded-xl border border-neutral-300 bg-white pl-9 pr-4 text-base text-ink placeholder:text-neutral-400 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
+          />
+        </div>
+      </div>
 
       <Input
         id="i-supplier"

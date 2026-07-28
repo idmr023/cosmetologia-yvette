@@ -6,7 +6,7 @@ node_modules
 backend/.env
 *.log
 .DS_Store
-drizzle/meta
+**/drizzle/meta
 .codebase-memory
 e2e/storage/
 playwright-report/

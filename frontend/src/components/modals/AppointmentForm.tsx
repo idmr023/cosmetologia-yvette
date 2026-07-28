@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { FilterChips } from "@/components/ui/FilterChips";
 import { formatCurrency } from "@/lib/utils";
 import { appointmentSchema, type AppointmentFormData } from "@/lib/schemas";
 import { apiFetch } from "@/lib/api";
@@ -51,12 +52,14 @@ export function AppointmentForm({ onSave, onCancel, loading }: AppointmentFormPr
   const [clients, setClients] = useState<ClientOpt[]>([]);
   const [loadingData, setLoadingData] = useState(true);
 
-  // Cliente: búsqueda o crear nuevo
   const [search, setSearch] = useState("");
   const [selectedClient, setSelectedClient] = useState<ClientOpt | null>(null);
   const [newName, setNewName] = useState("");
   const [newDni, setNewDni] = useState("");
   const [newPhone, setNewPhone] = useState("");
+  const [dniError, setDniError] = useState("");
+
+  const [serviceCategory, setServiceCategory] = useState("");
 
   const {
     register,
@@ -76,6 +79,22 @@ export function AppointmentForm({ onSave, onCancel, loading }: AppointmentFormPr
   });
 
   const selectedServiceIds = watch("serviceIds");
+
+  const categories = useMemo(() => {
+    return [...new Set(services.map((s) => s.category))];
+  }, [services]);
+
+  const filteredServices = useMemo(() => {
+    if (!serviceCategory) return services;
+    return services.filter((s) => s.category === serviceCategory);
+  }, [services, serviceCategory]);
+
+  const categoryChips = useMemo(() => {
+    return [
+      { value: "", label: "Todas" },
+      ...categories.map((c) => ({ value: c, label: c })),
+    ];
+  }, [categories]);
 
   const totalDuration = useMemo(() => {
     return services
@@ -113,10 +132,28 @@ export function AppointmentForm({ onSave, onCancel, loading }: AppointmentFormPr
       c.phone.includes(search),
   );
 
+  async function checkDniExists(dni: string): Promise<boolean> {
+    try {
+      const res = await apiFetch(`/api/clients?dni=${dni}`);
+      if (res.ok) {
+        const data = await res.json();
+        const list = data.data ?? data;
+        return Array.isArray(list) && list.length > 0;
+      }
+    } catch {}
+    return false;
+  }
+
   async function onSubmit(data: AppointmentFormData) {
     let clientId = selectedClient?.id;
 
     if (!clientId && newName.trim() && /^\d{8}$/.test(newDni) && newPhone.trim()) {
+      const exists = await checkDniExists(newDni);
+      if (exists) {
+        setDniError("Ya existe un cliente con ese DNI. Búscalo arriba.");
+        return;
+      }
+      setDniError("");
       try {
         const res = await apiFetch("/api/clients", {
           method: "POST",
@@ -140,6 +177,10 @@ export function AppointmentForm({ onSave, onCancel, loading }: AppointmentFormPr
     if (!clientId) return;
 
     const start = new Date(data.startAt);
+    const hour = start.getHours();
+    if (hour < 8 || hour >= 19) {
+      return;
+    }
     const end = new Date(start.getTime() + totalDuration * 60_000);
     const endAt = end.toISOString();
 
@@ -226,6 +267,7 @@ export function AppointmentForm({ onSave, onCancel, loading }: AppointmentFormPr
                 onChange={(e) => setNewPhone(e.target.value)}
               />
             </div>
+            {dniError && <p className="text-sm text-red-600">{dniError}</p>}
           </>
         ) : (
           <div className="flex items-center justify-between rounded-xl border border-neutral-200 bg-white px-4 py-3">
@@ -254,8 +296,15 @@ export function AppointmentForm({ onSave, onCancel, loading }: AppointmentFormPr
         <label className="text-sm font-medium text-neutral-700">
           Servicios {totalDuration > 0 && <span className="text-neutral-400">— {totalDuration} min total</span>}
         </label>
-        <div className="flex flex-wrap gap-2">
-          {services.map((s) => {
+        {categories.length > 1 && (
+          <FilterChips
+            options={categoryChips}
+            value={serviceCategory}
+            onChange={(v) => setServiceCategory(v)}
+          />
+        )}
+        <div className="max-h-56 overflow-y-auto flex flex-wrap gap-2">
+          {filteredServices.map((s) => {
             const selected = selectedServiceIds.includes(s.id);
             return (
               <button
@@ -298,13 +347,16 @@ export function AppointmentForm({ onSave, onCancel, loading }: AppointmentFormPr
       </div>
 
       {/* Fecha y hora */}
-      <Input
-        id="apt-datetime"
-        label="Fecha y hora"
-        type="datetime-local"
-        error={errors.startAt?.message}
-        {...register("startAt")}
-      />
+      <div className="flex flex-col gap-1">
+        <Input
+          id="apt-datetime"
+          label="Fecha y hora"
+          type="datetime-local"
+          error={errors.startAt?.message}
+          {...register("startAt")}
+        />
+        <p className="text-xs text-neutral-400">Horario: 8:00 am — 7:00 pm</p>
+      </div>
 
       {/* Notas */}
       <div className="flex flex-col gap-1.5">

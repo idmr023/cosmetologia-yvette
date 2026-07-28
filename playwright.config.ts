@@ -77,14 +77,15 @@ export default defineConfig({
     {
       command: "npm run dev",
       url: "http://localhost:3000",
+      cwd: path.resolve(__dirname, "frontend"),
       reuseExistingServer: false,
       timeout: 120000,
       env,
     },
     {
-      command: "npm run dev:backend",
+      command: "npm run dev",
       url: "http://localhost:4000/api/health",
-      cwd: __dirname,
+      cwd: path.resolve(__dirname, "backend"),
       reuseExistingServer: false,
       timeout: 120000,
     },

@@ -16,17 +16,25 @@ const TIERS = [
   { name: "Oro", minPoints: 500, discountPct: "10", color: "#C9A227", benefits: ["10% descuento", "Prioridad en agenda", "Cumpleaños gratis"] },
 ];
 
+let _seeded = false;
+
 async function seedTiersIfEmpty() {
-  const existing = await db.select({ id: schema.loyaltyTiers.id }).from(schema.loyaltyTiers).limit(1);
-  if (existing.length > 0) return;
-  for (const tier of TIERS) {
-    await db.insert(schema.loyaltyTiers).values({
-      name: tier.name,
-      minPoints: tier.minPoints,
-      discountPct: tier.discountPct,
-      color: tier.color,
-      benefits: tier.benefits,
-    });
+  if (_seeded) return;
+  try {
+    const existing = await db.select({ id: schema.loyaltyTiers.id }).from(schema.loyaltyTiers).limit(1);
+    if (existing.length > 0) { _seeded = true; return; }
+    for (const tier of TIERS) {
+      await db.insert(schema.loyaltyTiers).values({
+        name: tier.name,
+        minPoints: tier.minPoints,
+        discountPct: tier.discountPct,
+        color: tier.color,
+        benefits: tier.benefits,
+      });
+    }
+    _seeded = true;
+  } catch (e) {
+    console.warn("[loyalty] seed skipped —", (e as Error).message);
   }
 }
 

@@ -8,6 +8,7 @@ import { PageShell } from "@/components/ui/PageShell";
 import { FilterChips } from "@/components/ui/FilterChips";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useSheetStore } from "@/components/ui/Sheet";
+import { useToast } from "@/components/ui/Toast";
 import { InventoryForm } from "@/components/modals/InventoryForm";
 import { InventoryCard } from "@/components/cards/InventoryCard";
 import { useInventory, type InventoryType, type InventoryItem } from "@/hooks/useInventory";
@@ -24,6 +25,7 @@ export default function InventarioPage() {
   const [deleting, setDeleting] = useState<InventoryItem | null>(null);
   const [saving, setSaving] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const { toast } = useToast();
 
   function openCreate() {
     sheet.show(<InventoryForm onSave={handleSave} onCancel={sheet.close} />);
@@ -76,12 +78,14 @@ export default function InventarioPage() {
     try {
       if (id) {
         await update(id, data);
+        toast("Producto actualizado correctamente", "success");
       } else {
         await create(data);
+        toast("Producto creado correctamente", "success");
       }
       sheet.close();
     } catch {
-      // error handled by hook
+      toast("Error al guardar el producto", "error");
     }
   }
 
@@ -90,9 +94,10 @@ export default function InventarioPage() {
     setConfirmLoading(true);
     try {
       await remove(deleting.id);
+      toast("Producto eliminado correctamente", "success");
       setDeleting(null);
     } catch {
-      // error handled by hook
+      toast("Error al eliminar el producto", "error");
     }
     setConfirmLoading(false);
   }
@@ -158,15 +163,29 @@ function RestockForm({
       }}
       className="flex flex-col gap-4"
     >
-      <input
-        type="number"
-        min="1"
-        value={qty}
-        onChange={(e) => setQty(e.target.value)}
-        className="min-h-touch w-full rounded-xl border border-neutral-300 bg-white px-4 text-base text-ink focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
-        placeholder="Cantidad a agregar"
-        autoFocus
-      />
+      <div className="flex flex-col gap-2">
+        <input
+          type="number"
+          min="1"
+          value={qty}
+          onChange={(e) => setQty(e.target.value)}
+          className="min-h-touch w-full rounded-xl border border-neutral-300 bg-white px-4 text-base text-ink focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
+          placeholder="Cantidad a agregar"
+          autoFocus
+        />
+        <div className="flex gap-2">
+          {[5, 10, 20, 50].map((n) => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => setQty(String(n))}
+              className="flex-1 rounded-lg border border-neutral-200 bg-white py-2 text-sm text-neutral-600 hover:border-gold hover:text-gold transition-colors"
+            >
+              +{n}
+            </button>
+          ))}
+        </div>
+      </div>
       <div className="flex gap-3">
         <Button type="button" onClick={onCancel} variant="outline" fullWidth disabled={loading}>
           Cancelar

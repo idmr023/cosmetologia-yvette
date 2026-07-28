@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import { PageShell } from "@/components/ui/PageShell";
 import { FilterChips } from "@/components/ui/FilterChips";
 import { useSheetStore } from "@/components/ui/Sheet";
+import { useToast } from "@/components/ui/Toast";
 import { AppointmentCard } from "@/components/cards/AppointmentCard";
 import { AppointmentForm } from "@/components/modals/AppointmentForm";
 import { useAppointments, type AppointmentStatus } from "@/hooks/useAppointments";
@@ -22,6 +23,7 @@ export default function CitasPage() {
   const { appointments, filter, setFilter, statusLabels, loading, refresh, update } = useAppointments();
   const sheet = useSheetStore();
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
 
   function openNewAppointment() {
     sheet.show(
@@ -52,23 +54,41 @@ export default function CitasPage() {
       if (res.ok) {
         await refresh();
         sheet.close();
+        toast("Cita creada correctamente", "success");
+      } else {
+        toast("Error al crear la cita", "error");
       }
     } catch {
-      // error handled
+      toast("Error al crear la cita", "error");
     }
     setSaving(false);
   }
 
   async function handleConfirm(apt: { id: string }) {
-    await update(apt.id, { status: "confirmada" } as const);
+    try {
+      await update(apt.id, { status: "confirmada" } as const);
+      toast("Cita confirmada", "success");
+    } catch {
+      toast("Error al confirmar la cita", "error");
+    }
   }
 
   async function handleComplete(apt: { id: string }) {
-    await update(apt.id, { status: "completada" } as const);
+    try {
+      await update(apt.id, { status: "completada" } as const);
+      toast("Cita marcada como completada", "success");
+    } catch {
+      toast("Error al completar la cita", "error");
+    }
   }
 
   async function handleCancel(apt: { id: string }) {
-    await update(apt.id, { status: "cancelada" } as const);
+    try {
+      await update(apt.id, { status: "cancelada" } as const);
+      toast("Cita cancelada", "success");
+    } catch {
+      toast("Error al cancelar la cita", "error");
+    }
   }
 
   return (

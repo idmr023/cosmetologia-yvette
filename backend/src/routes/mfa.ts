@@ -163,4 +163,38 @@ router.get(
   },
 );
 
+router.get(
+  "/check",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const email = req.query.email as string | undefined;
+      if (!email) {
+        res.status(400).json({ error: "Email requerido" });
+        return;
+      }
+
+      const [user] = await db
+        .select({ id: schema.users.id })
+        .from(schema.users)
+        .where(eq(schema.users.email, email.toLowerCase().trim()))
+        .limit(1);
+
+      if (!user) {
+        res.json({ mfaEnabled: false });
+        return;
+      }
+
+      const [mfa] = await db
+        .select({ isEnabled: schema.userMfa.isEnabled })
+        .from(schema.userMfa)
+        .where(eq(schema.userMfa.userId, user.id))
+        .limit(1);
+
+      res.json({ mfaEnabled: mfa?.isEnabled ?? false });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
 export default router;

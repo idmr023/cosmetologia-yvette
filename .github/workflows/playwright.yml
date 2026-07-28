@@ -45,9 +45,19 @@ jobs:
           node-version: 20
           cache: "npm"
 
-      - run: npm ci
+      - name: Install root deps
+        run: npm ci
+
+      - name: Install frontend deps
+        working-directory: frontend
+        run: npm ci
+
+      - name: Install backend deps
+        working-directory: backend
+        run: npm ci
 
       - run: npx playwright install chromium
+        working-directory: frontend
 
       - name: Seed test data
         run: npm run test:e2e:seed
@@ -55,6 +65,7 @@ jobs:
           DATABASE_URL: postgres://test:test@localhost:5432/pws_test
 
       - name: Build Next.js
+        working-directory: frontend
         run: npm run build
         env:
           DATABASE_URL: postgres://test:test@localhost:5432/pws_test

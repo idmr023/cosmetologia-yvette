@@ -23,15 +23,27 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: npm
 
-      - run: npm ci
+      - name: Install root deps
+        run: npm ci
+
+      - name: Install frontend deps
+        working-directory: frontend
+        run: npm ci
+
+      - name: Install backend deps
+        working-directory: backend
+        run: npm ci
 
       - name: Lint
+        working-directory: frontend
         run: npm run lint
 
       - name: Typecheck
+        working-directory: frontend
         run: npm run typecheck
 
       - name: Unit Tests
+        working-directory: frontend
         run: npm run test
 
   build:
@@ -46,9 +58,15 @@ jobs:
           node-version: 20
           cache: npm
 
-      - run: npm ci
+      - name: Install root deps
+        run: npm ci
+
+      - name: Install frontend deps
+        working-directory: frontend
+        run: npm ci
 
       - name: Build
+        working-directory: frontend
         run: npm run build
         env:
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
