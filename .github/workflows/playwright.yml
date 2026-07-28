@@ -60,7 +60,8 @@ jobs:
         working-directory: frontend
 
       - name: Seed test data
-        run: npm run test:e2e:seed
+        working-directory: frontend
+        run: npm run seed-e2e
         env:
           DATABASE_URL: postgres://test:test@localhost:5432/pws_test
 
