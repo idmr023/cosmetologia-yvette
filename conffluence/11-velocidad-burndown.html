@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>11-velocidad-burndown</title>
+</head>
+<body>
+<h1>11 — Velocity & Burndown</h1>
+
+<h2>Velocity histórica</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Sprint</th>
+      <th>Release</th>
+      <th>Story Points</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Sprint 01</td>
+      <td>v0.1.0</td>
+      <td>18</td>
+      <td>✅ Completado</td>
+    </tr>
+    <tr>
+      <td>Sprint 02</td>
+      <td>v0.1.0</td>
+      <td>18</td>
+      <td>✅ Completado</td>
+    </tr>
+    <tr>
+      <td>Sprint 03</td>
+      <td>v0.1.0</td>
+      <td>18</td>
+      <td>✅ Completado</td>
+    </tr>
+    <tr>
+      <td>Sprint 04</td>
+      <td>v0.2.0</td>
+      <td>24</td>
+      <td>✅ Completado</td>
+    </tr>
+    <tr>
+      <td>Sprint 05</td>
+      <td>v0.2.0</td>
+      <td>25</td>
+      <td>✅ Completado</td>
+    </tr>
+    <tr>
+      <td>Sprint 06</td>
+      <td>v0.2.0</td>
+      <td>26</td>
+      <td>✅ Completado</td>
+    </tr>
+    <tr>
+      <td>Sprint 07</td>
+      <td>v0.3.0</td>
+      <td>30</td>
+      <td>✅ Completado</td>
+    </tr>
+    <tr>
+      <td>Sprint 08</td>
+      <td>v0.3.0</td>
+      <td>32</td>
+      <td>✅ Completado</td>
+    </tr>
+    <tr>
+      <td>Sprint 09</td>
+      <td>v0.3.0</td>
+      <td>31</td>
+      <td>✅ Completado</td>
+    </tr>
+    <tr>
+      <td>Sprint 10</td>
+      <td>v0.4.0</td>
+      <td>22</td>
+      <td>✅ Completado</td>
+    </tr>
+    <tr>
+      <td>Sprint 11</td>
+      <td>v0.4.0</td>
+      <td>22</td>
+      <td>✅ Completado</td>
+    </tr>
+    <tr>
+      <td>Sprint 12</td>
+      <td>v0.4.0</td>
+      <td>22</td>
+      <td>✅ Completado</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Velocity promedio</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Período</th>
+      <th>Velocity promedio</th>
+      <th>Tendencia</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Sprints 01–03 (early)</td>
+      <td>18 pts</td>
+      <td>Curva de aprendizaje</td>
+    </tr>
+    <tr>
+      <td>Sprints 04–06 (refactor)</td>
+      <td>25 pts</td>
+      <td>Estabilización</td>
+    </tr>
+    <tr>
+      <td>Sprints 07–09 (features)</td>
+      <td>31 pts</td>
+      <td>Pico de productividad</td>
+    </tr>
+    <tr>
+      <td>Sprints 10–12 (testing docs)</td>
+      <td>22 pts</td>
+      <td>Calidad sobre cantidad</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Velocity general</strong>: 248 pts ÷ 12 sprints = <strong>20.7 pts/sprint</strong></p>
+
+<h2>Burndown total del proyecto</h2>
+
+<pre><code>Total backlog: 249 pts
+Total entregado: 248 pts
+Cobertura: 99.6%</code></pre>
+
+<h3>Burndown chart (acumulado)</h3>
+
+<pre><code>Pts
+250 ┤                                                    ●
+    │                                                 ●
+200 ┤                                            ●
+    │                                         ●
+150 ┤                                   ●
+    │                              ●
+100 ┤                         ●
+    │                    ●
+ 50 ┤              ●
+    │         ●
+  0 ┤──●──●──●──●──●──●──●──●──●──●──●──●──
+      1  2  3  4  5  6  7  8  9 10 11 12
+                                  Sprint</code></pre>
+
+<h3>Burndown del Sprint 12 (último sprint)</h3>
+
+<pre><code>Capacity: 22 pts
+Duración: 20 días hábiles
+
+Pts
+25 ┤ ●
+   │  ●
+20 ┤    ●
+   │       ●
+15 ┤          ●
+   │             ●
+10 ┤                ●
+   │                   ●
+ 5 ┤                      ●
+   │                         ●
+ 0 ┤                            ●──
+    D1 D3 D5 D7 D9 D11 D13 D15 D17 D19</code></pre>
+
+<table>
+  <thead>
+    <tr>
+      <th>Día</th>
+      <th>Pts pendientes</th>
+      <th>Evento</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>22</td>
+      <td>Sprint Planning</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>22</td>
+      <td>Daily: inicio TSK-001 (hydration fix)</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>19</td>
+      <td>TSK-001 completado ✅</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>17</td>
+      <td>TSK-002 completado (lazy loading) ✅</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>15</td>
+      <td>TSK-003: login hash bug — tomó más tiempo</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>10</td>
+      <td>TSK-003 completado ✅</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>8</td>
+      <td>TSK-004 + TSK-005 completados ✅</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td>6</td>
+      <td>TSK-006: circuit breaker implementado ✅</td>
+    </tr>
+    <tr>
+      <td>17</td>
+      <td>3</td>
+      <td>TSK-007: documentación en progreso</td>
+    </tr>
+    <tr>
+      <td>19</td>
+      <td>0</td>
+      <td>TSK-007 completado. Sprint Review ✅</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Forecast</h2>
+
+<h3>Capacidad proyectada post-entrega</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Período</th>
+      <th>Capacidad esperada</th>
+      <th>Actividad</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Mes 1 post-entrega</td>
+      <td>15 pts (50%)</td>
+      <td>Soporte, bug fixes críticos</td>
+    </tr>
+    <tr>
+      <td>Mes 2-3 post-entrega</td>
+      <td>10 pts (30%)</td>
+      <td>Features futuras: pasarela de pagos real, app mobile nativa</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Escenarios futuros</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Feature</th>
+      <th>Pts estimados</th>
+      <th>Sprints requeridos</th>
+      <th>Prioridad</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Integración Mercado Pago</td>
+      <td>13</td>
+      <td>1</td>
+      <td>Alta</td>
+    </tr>
+    <tr>
+      <td>App mobile (React Native)</td>
+      <td>55</td>
+      <td>3</td>
+      <td>Media</td>
+    </tr>
+    <tr>
+      <td>Dashboard colaborador avanzado</td>
+      <td>13</td>
+      <td>1</td>
+      <td>Baja</td>
+    </tr>
+    <tr>
+      <td>IA para recomendación de servicios</td>
+      <td>21</td>
+      <td>1</td>
+      <td>Baja</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

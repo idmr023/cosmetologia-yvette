@@ -10,8 +10,14 @@ import {
   Briefcase,
   DollarSign,
   BarChart3,
+  TrendingUp,
+  Award,
+  MessageCircle,
   Wallet,
   UserCircle,
+  ShoppingBag,
+  Star,
+  Home,
 } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 
@@ -21,12 +27,15 @@ interface MenuItem {
   icon: React.ComponentType<{ className?: string }>;
 }
 
-const items: MenuItem[] = [
+const adminItems: MenuItem[] = [
   { href: "/admin/inicio", label: "Inicio", icon: LayoutDashboard },
   { href: "/admin/citas", label: "Citas", icon: CalendarDays },
   { href: "/admin/clientes", label: "Clientes", icon: Users },
   { href: "/admin/servicios", label: "Servicios", icon: Scissors },
   { href: "/admin/colaboradores", label: "Colaboradoras", icon: Briefcase },
+  { href: "/admin/analitica", label: "Analítica", icon: TrendingUp },
+  { href: "/admin/fidelizacion", label: "Fidelización", icon: Award },
+  { href: "/admin/resenas", label: "Reseñas", icon: MessageCircle },
   { href: "/admin/inventario", label: "Inventario", icon: Package },
   { href: "/admin/comisiones", label: "Comisiones", icon: DollarSign },
   { href: "/admin/cajas", label: "Cajas", icon: Wallet },
@@ -34,7 +43,18 @@ const items: MenuItem[] = [
   { href: "/admin/perfil", label: "Perfil", icon: UserCircle },
 ];
 
-export function MobileMenuGrid({ onNavigate }: { onNavigate?: () => void }) {
+const clienteItems: MenuItem[] = [
+  { href: "/cliente/inicio", label: "Inicio", icon: Home },
+  { href: "/cliente/citas", label: "Mis Citas", icon: CalendarDays },
+  { href: "/cliente/fidelizacion", label: "Fidelización", icon: Award },
+  { href: "/cliente/ordenes", label: "Mis Órdenes", icon: ShoppingBag },
+  { href: "/cliente/resenas", label: "Mis Reseñas", icon: Star },
+  { href: "/cliente/perfil", label: "Perfil", icon: UserCircle },
+];
+
+export function MobileMenuGrid({ onNavigate, role = "admin" }: { onNavigate?: () => void; role?: "admin" | "cliente" }) {
+  const items = role === "cliente" ? clienteItems : adminItems;
+
   return (
     <div className="grid grid-cols-3 gap-3 p-4">
       {items.map((item) => {

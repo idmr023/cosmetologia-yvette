@@ -1,10 +1,9 @@
 "use client";
 
 import { AlertTriangle, Package, Pencil, Plus, Trash2 } from "lucide-react";
-import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { ThreeDotMenu } from "@/components/ui/ThreeDotMenu";
-import { formatCurrency, isLowStock } from "@/lib/utils";
+import { DataCard } from "@/components/ui/DataCard";
+import { formatCurrency } from "@/lib/utils";
 import type { InventoryItem } from "@/hooks/useInventory";
 
 interface InventoryCardProps {
@@ -20,46 +19,29 @@ export function InventoryCard({
   onRestock,
   onDelete,
 }: InventoryCardProps) {
-  const low = isLowStock(item.stockQty, item.minStock);
+  const low = item.stockQty <= item.minStock;
 
   return (
-    <Card className="flex flex-col gap-3">
-      <div className="flex items-start justify-between">
-        <div className="flex flex-col gap-0.5">
-          <div className="flex items-center gap-2">
-            <Package className="h-4 w-4 text-neutral-400" />
-            <h3 className="text-base font-semibold text-ink">{item.name}</h3>
-          </div>
-          <p className="text-sm text-neutral-500">{item.category}</p>
-        </div>
-        <ThreeDotMenu
-          items={[
-            { label: "Editar", icon: Pencil, onClick: () => onEdit?.(item) },
-            {
-              label: "Agregar stock",
-              icon: Plus,
-              onClick: () => onRestock?.(item),
-            },
-            {
-              label: "Eliminar",
-              icon: Trash2,
-              danger: true,
-              onClick: () => onDelete?.(item),
-            },
-          ]}
-        />
-      </div>
-
+    <DataCard
+      header={{
+        icon: Package,
+        title: item.name,
+        subtitle: item.category ?? undefined,
+      }}
+      menu={
+        onEdit || onRestock || onDelete
+          ? [
+              ...(onEdit ? [{ label: "Editar", icon: Pencil, onClick: () => onEdit(item) }] : []),
+              ...(onRestock ? [{ label: "Agregar stock", icon: Plus, onClick: () => onRestock(item) }] : []),
+              ...(onDelete ? [{ label: "Eliminar", icon: Trash2, danger: true as const, onClick: () => onDelete(item) }] : []),
+            ]
+          : undefined
+      }
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-sm text-neutral-500">Stock:</span>
-          <span
-            className={
-              low
-                ? "text-base font-bold text-red-600"
-                : "text-base font-bold text-ink"
-            }
-          >
+          <span className={low ? "text-base font-bold text-red-600" : "text-base font-bold text-ink"}>
             {item.stockQty}
           </span>
           <span className="text-sm text-neutral-400">/ mín {item.minStock}</span>
@@ -84,6 +66,6 @@ export function InventoryCard({
           </span>
         )}
       </div>
-    </Card>
+    </DataCard>
   );
 }

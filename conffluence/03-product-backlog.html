@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>03-product-backlog</title>
+</head>
+<body>
+<h1>03 — Product Backlog</h1>
+
+<h2>Backlog priorizado (Épicas + User Stories)</h2>
+
+<p>Las historias están priorizadas por valor de negocio + riesgo técnico. Escala Fibonacci: 1, 2, 3, 5, 8, 13, 21.</p>
+
+<h3>Épica 1: Landing y presencia web (Prioridad: Crítico)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>User Story</th>
+      <th>Pts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>US-001</td>
+      <td>Como visitante, quiero ver una landing informativa con servicios, galería y CTA, para decidir agendar una cita</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>US-002</td>
+      <td>Como administrador, quiero que la landing sea mobile-first y responsive, para captar clientes desde celular</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>US-003</td>
+      <td>Como visitante, quiero ver reseñas de clientes en la landing, para confiar en el servicio antes de reservar</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Épica 2: Autenticación y seguridad (Prioridad: Crítico)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>User Story</th>
+      <th>Pts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>US-004</td>
+      <td>Como administrador, quiero iniciar sesión con email + password, para acceder al panel de gestión</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>US-005</td>
+      <td>Como administrador, quiero protección contra fuerza bruta (rate limit + lockout), para evitar accesos no autorizados</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>US-006</td>
+      <td>Como administrador, quiero poder usar Google OAuth, para iniciar sesión sin credenciales adicionales</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>US-007</td>
+      <td>Como administrador, quiero MFA/TOTP opcional, para proteger mi cuenta ante robo de contraseña</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>US-008</td>
+      <td>Como administrador, quiero que las contraseñas se almacenen con Argon2id, para cumplir estándares OWASP</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Épica 3: Booking público (Prioridad: Alta)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>User Story</th>
+      <th>Pts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>US-009</td>
+      <td>Como cliente, quiero reservar una cita online sin registro, eligiendo servicio, colaboradora y horario</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>US-010</td>
+      <td>Como cliente, quiero ver solo slots disponibles en tiempo real, para no elegir horarios ocupados</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>US-011</td>
+      <td>Como cliente, quiero recibir confirmación por WhatsApp, para tener mi cita registrada</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>US-012</td>
+      <td>Como administrador, quiero que se genere una boleta única B{YYYYMMDD}-{ID} por cita, para tracking interno</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Épica 4: Panel administrativo (Prioridad: Alta)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>User Story</th>
+      <th>Pts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>US-013</td>
+      <td>Como administrador, quiero un dashboard con KPIs (ingresos, citas, ocupación), para monitorear el negocio</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>US-014</td>
+      <td>Como administrador, quiero CRUD de citas con filtros, para gestionar la agenda diaria</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>US-015</td>
+      <td>Como administrador, quiero CRUD de clientes con historial, para tener perfil completo de cada cliente</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>US-016</td>
+      <td>Como administrador, quiero CRUD de inventario (insumos + productos venta), para controlar stock</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>US-017</td>
+      <td>Como administrador, quiero reportes de comisiones por colaboradora, para liquidar pagos</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>US-018</td>
+      <td>Como administrador, quiero apertura y cierre de caja diaria, para cuadrar ingresos</td>
+      <td>8</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Épica 5: Refactor Backend Express (Prioridad: Alta)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>User Story</th>
+      <th>Pts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>US-019</td>
+      <td>Como desarrollador, quiero separar backend a Express, para tener una API independiente de Next.js</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>US-020</td>
+      <td>Como desarrollador, quiero usar Repository Pattern (DAO), para separar lógica de negocio de BD</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>US-021</td>
+      <td>Como desarrollador, quiero middleware JWT + rate-limit + Helmet + CORS, para seguridad en capas</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>US-022</td>
+      <td>Como desarrollador, quiero circuit-breaker + retry pattern, para resiliencia ante fallos de BD</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Épica 6: Fidelización y reseñas (Prioridad: Media)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>User Story</th>
+      <th>Pts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>US-023</td>
+      <td>Como cliente, quiero acumular puntos por cada cita, para canjear descuentos en servicios</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>US-024</td>
+      <td>Como cliente, quiero subir de nivel (Bronce/Plata/Oro), para obtener mejores beneficios</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>US-025</td>
+      <td>Como administrador, quiero gestionar recompensas y niveles, para motivar la recurrencia</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>US-026</td>
+      <td>Como cliente, quiero dejar una reseña post-cita, para compartir mi experiencia</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>US-027</td>
+      <td>Como administrador, quiero moderar reseñas, para mantener la reputación del centro</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>US-028</td>
+      <td>Como cliente, quiero recomendar el centro con código de referido, para obtener descuento en mi próxima visita</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Épica 7: E-commerce (Prioridad: Media)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>User Story</th>
+      <th>Pts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>US-029</td>
+      <td>Como cliente, quiero ver productos en venta con stock, para comprar online</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>US-030</td>
+      <td>Como cliente, quiero agregar productos a un carrito, para revisar antes de pagar</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>US-031</td>
+      <td>Como cliente, quiero checkout con datos de envío y método de pago, para completar mi compra</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>US-032</td>
+      <td>Como administrador, quiero recibir pedidos con estado, para preparar entregas</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>US-033</td>
+      <td>Como cliente, quiero ver el estado de mi orden, para saber cuándo recogerla</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Épica 8: Testing y documentación (Prioridad: Alta)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>User Story</th>
+      <th>Pts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>US-034</td>
+      <td>Como desarrollador, quiero E2E tests con Playwright, para asegurar flujos críticos en CI</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>US-035</td>
+      <td>Como administrador, quiero un sistema de monitoreo (Sentry + métricas), para detectar errores en producción</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>US-036</td>
+      <td>Como desarrollador, quiero documentación de arquitectura y API, para mantener el proyecto</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>US-037</td>
+      <td>Como desarrollador, quiero PWA con service worker, para que la app funcione offline parcialmente</td>
+      <td>8</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Resumen de backlog</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Épica</th>
+      <th>Historias</th>
+      <th>Total Story Points</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Landing</td>
+      <td>3</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>Autenticación</td>
+      <td>5</td>
+      <td>29</td>
+    </tr>
+    <tr>
+      <td>Booking</td>
+      <td>4</td>
+      <td>29</td>
+    </tr>
+    <tr>
+      <td>Panel admin</td>
+      <td>6</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <td>Refactor backend</td>
+      <td>4</td>
+      <td>34</td>
+    </tr>
+    <tr>
+      <td>Fidelización</td>
+      <td>6</td>
+      <td>31</td>
+    </tr>
+    <tr>
+      <td>E-commerce</td>
+      <td>5</td>
+      <td>29</td>
+    </tr>
+    <tr>
+      <td>Testing + docs</td>
+      <td>4</td>
+      <td>34</td>
+    </tr>
+    <tr>
+      <td><strong>Total</strong></td>
+      <td><strong>37</strong></td>
+      <td><strong>249</strong></td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { apiFetch } from "@/lib/api";
+import { unwrapResponse } from "@/lib/utils";
 
 export interface CashRegister {
   id: string;
@@ -49,18 +51,19 @@ export function useCashRegister(): UseCashRegisterReturn {
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      // Get open register for today
       const [currentRes, allRes] = await Promise.all([
-        fetch("/api/cash-registers?estado=abierta"),
-        fetch("/api/cash-registers"),
+        apiFetch("/api/cash-registers?estado=abierta"),
+        apiFetch("/api/cash-registers"),
       ]);
 
       if (currentRes.ok) {
-        const data: CashRegister[] = await currentRes.json();
+        const json = await currentRes.json();
+        const data = unwrapResponse<CashRegister>(json);
         setCurrent(data[0] ?? null);
       }
       if (allRes.ok) {
-        const data: CashRegister[] = await allRes.json();
+        const json = await allRes.json();
+        const data = unwrapResponse<CashRegister>(json);
         setRegisters(data);
       }
     } catch (err) {
@@ -76,9 +79,8 @@ export function useCashRegister(): UseCashRegisterReturn {
 
   const open = useCallback(
     async (colaboradorId: string, montoInicial: string) => {
-      const res = await fetch("/api/cash-registers", {
+      const res = await apiFetch("/api/cash-registers", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ colaboradorId, montoInicial }),
       });
       if (!res.ok) {
@@ -92,9 +94,8 @@ export function useCashRegister(): UseCashRegisterReturn {
 
   const close = useCallback(
     async (id: string, montoReal: string, notas?: string) => {
-      const res = await fetch(`/api/cash-registers/${id}`, {
+      const res = await apiFetch(`/api/cash-registers/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ montoReal, notas }),
       });
       if (!res.ok) throw new Error("Error al cerrar caja");
@@ -104,16 +105,15 @@ export function useCashRegister(): UseCashRegisterReturn {
   );
 
   const movements = useCallback(async (id: string) => {
-    const res = await fetch(`/api/cash-registers/${id}/movements`);
+    const res = await apiFetch(`/api/cash-registers/${id}/movements`);
     if (!res.ok) throw new Error("Error al cargar movimientos");
     return res.json();
   }, []);
 
   const addExpense = useCallback(
     async (id: string, concepto: string, monto: string) => {
-      const res = await fetch(`/api/cash-registers/${id}/movements`, {
+      const res = await apiFetch(`/api/cash-registers/${id}/movements`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tipo: "egreso", concepto, monto }),
       });
       if (!res.ok) throw new Error("Error al registrar egreso");

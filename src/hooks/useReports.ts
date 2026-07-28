@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { apiFetch } from "@/lib/api";
 
 export interface ReportData {
   revenue: number;
@@ -52,7 +53,7 @@ export function useReports(): UseReportsReturn {
       const params = new URLSearchParams();
       if (desde) params.set("desde", desde);
       if (hasta) params.set("hasta", hasta);
-      const res = await fetch(`/api/reports?${params}`);
+      const res = await apiFetch(`/api/reports?${params}`);
       if (!res.ok) throw new Error("Error al cargar reportes");
       const json = await res.json();
       setData(json);

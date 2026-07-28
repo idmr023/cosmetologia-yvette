@@ -1,24 +1,21 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import { Loader2, Calendar } from "lucide-react";
 import { TopBar } from "@/components/navigation/TopBar";
 import { Card } from "@/components/ui/Card";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { AppointmentCard } from "@/components/cards/AppointmentCard";
 import { useAppointments } from "@/hooks/useAppointments";
-import { getSession } from "next-auth/react";
-import { useEffect, useState } from "react";
 
 export default function MisCitasPage() {
-  const { appointments, statusLabels, loading, update } = useAppointments();
-  const [userName, setUserName] = useState("");
+  const { data: session } = useSession();
+  const { appointments, statusLabels, loading, error, update } = useAppointments();
+  const colaboradorId = session?.user?.colaboradorId;
 
-  useEffect(() => {
-    getSession().then((s) => setUserName(s?.user?.name ?? ""));
-  }, []);
-
-  const mine = appointments.filter((a) =>
-    userName && a.colaboradorName.toLowerCase().includes(userName.split(" ")[0]?.toLowerCase() ?? ""),
-  );
+  const mine = colaboradorId
+    ? appointments.filter((a) => a.colaboradorId === colaboradorId)
+    : [];
 
   return (
     <>
@@ -35,6 +32,8 @@ export default function MisCitasPage() {
           <div className="flex justify-center py-8">
             <Loader2 className="h-8 w-8 animate-spin text-gold" />
           </div>
+        ) : error ? (
+          <EmptyState message={error} />
         ) : mine.length === 0 ? (
           <Card className="py-8 text-center text-sm text-neutral-400">
             No tienes citas asignadas

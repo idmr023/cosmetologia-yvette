@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useCrud } from "@/hooks/useCrud";
+import { apiFetch } from "@/lib/api";
+import { useMemo } from "react";
 
 export interface Commission {
   id: string;
@@ -26,39 +28,24 @@ interface UseCommissionsReturn {
 }
 
 export function useCommissions(): UseCommissionsReturn {
-  const [commissions, setCommissions] = useState<Commission[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const crud = useCrud<Commission>("/api/commissions");
 
-  const fetchCommissions = useCallback(async () => {
-    try {
-      const res = await fetch("/api/commissions");
-      if (!res.ok) throw new Error("Error al cargar comisiones");
-      const data = await res.json();
-      setCommissions(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Error desconocido");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchCommissions();
-  }, [fetchCommissions]);
-
-  const pendingTotal = commissions
-    .filter((c) => c.status === "pendiente")
-    .reduce((sum, c) => sum + Number(c.amount), 0);
-
-  const pay = useCallback(
-    async (id: string) => {
-      const res = await fetch(`/api/commissions/${id}`, { method: "PUT" });
-      if (!res.ok) throw new Error("Error al pagar comisión");
-      await fetchCommissions();
-    },
-    [fetchCommissions],
+  const pendingTotal = useMemo(
+    () => crud.data.filter((c) => c.status === "pendiente").reduce((sum, c) => sum + Number(c.amount), 0),
+    [crud.data],
   );
 
-  return { commissions, loading, error, pendingTotal, pay };
+  const pay = async (id: string) => {
+    const res = await apiFetch(`/api/commissions/${id}`, { method: "PUT" });
+    if (!res.ok) throw new Error("Error al pagar comisión");
+    await crud.refresh();
+  };
+
+  return {
+    commissions: crud.data,
+    loading: crud.loading,
+    error: crud.error,
+    pendingTotal,
+    pay,
+  };
 }

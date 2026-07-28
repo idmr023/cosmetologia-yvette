@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sprint-06</title>
+</head>
+<body>
+<h1>Sprint 06 — Seguridad: Argon2 + JWT + MFA + RLS</h1>
+
+<p><strong>Release</strong>: v0.2.0 | <strong>Período</strong>: Semana 21–24 (Año 1) | <strong>Cadencia</strong>: 4 semanas</p>
+
+<h2>Sprint Goal</h2>
+
+<blockquote><p>Endurecer la seguridad del sistema a nivel OWASP</p></blockquote>
+
+<h2>Backlog</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>User Story</th>
+      <th>Pts</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>US-007</td>
+      <td>MFA/TOTP opcional</td>
+      <td>8</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>US-008</td>
+      <td>Almacenar contraseñas con Argon2id</td>
+      <td>3</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>TSK-005</td>
+      <td>Refresh tokens con rotación (Access 15min + Refresh 7d)</td>
+      <td>5</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>TSK-006</td>
+      <td>Row Level Security en tablas transaccionales</td>
+      <td>5</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>TSK-007</td>
+      <td>Auditoría WORM con triggers AFTER ROW</td>
+      <td>5</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td><strong>Total</strong></td>
+      <td></td>
+      <td><strong>26</strong></td>
+      <td><strong>✅</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Daily highlights</h2>
+
+<ul>
+  <li>D1–D5: Argon2id + migración automática bcrypt→argon2 en login</li>
+  <li>D6–D10: JWT access/refresh tokens con rotación. Tabla <code>refresh_tokens</code></li>
+  <li>D11–D14: MFA/TOTP con otplib + QR code generation</li>
+  <li>D15–D18: RLS en 5 tablas (appointments, commissions, cash_registers, inventory, orders)</li>
+  <li>D19–D20: Audit logs WORM con triggers AFTER ROW capturando OLD/NEW en JSONB</li>
+</ul>
+
+<h2>Sprint Review outcome</h2>
+
+<blockquote><p>✅ <strong>Aceptado</strong>: MFA configurado para admin</p></blockquote>
+
+<h2>Retrospective actions</h2>
+
+<ul>
+  <li><strong>Start</strong>: Verificar compatibilidad de hash antes de migrar bcrypt→argon2</li>
+  <li><strong>Stop</strong>: Migrar hashes en lote sin rollback</li>
+  <li><code>tryMigrateToArgon2</code> en login exitoso (no en lote)</li>
+</ul>
+</body>
+</html>

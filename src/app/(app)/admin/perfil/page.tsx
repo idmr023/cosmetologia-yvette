@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { Save, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { TopBar } from "@/components/navigation/TopBar";
 import { Card } from "@/components/ui/Card";
@@ -9,11 +10,16 @@ import { Input } from "@/components/ui/Input";
 import { formatCurrency } from "@/lib/utils";
 
 export default function PerfilPage() {
+  const { data: session } = useSession();
   const [recargo, setRecargo] = useState("15");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+
+  const userName = session?.user?.name ?? "Admin";
+  const userInitial = userName.charAt(0).toUpperCase();
+  const roleLabel = session?.user?.role === "admin" ? "Administradora" : "Colaboradora";
 
   useEffect(() => {
     Promise.all([
@@ -76,11 +82,11 @@ export default function PerfilPage() {
       <div className="mx-auto max-w-2xl space-y-4 p-4">
         <Card className="flex flex-col items-center gap-4 py-6 text-center">
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gold/10 text-2xl font-semibold text-gold">
-            Y
+            {userInitial}
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-ink dark:text-white">Yvette Roa</h2>
-            <p className="text-sm text-neutral-500">Administradora</p>
+            <h2 className="text-lg font-semibold text-ink dark:text-white">{userName}</h2>
+            <p className="text-sm text-neutral-500">{roleLabel}</p>
           </div>
         </Card>
 

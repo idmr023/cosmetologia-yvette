@@ -5,15 +5,18 @@ import { usePathname } from "next/navigation";
 import { Scissors } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
-import { ADMIN_DESKTOP_NAV, COLABORADOR_NAV, type NavItem } from "./navConfig";
+import { ADMIN_DESKTOP_NAV, COLABORADOR_NAV, CLIENTE_DESKTOP_NAV, type NavItem } from "./navConfig";
 
 interface SideNavProps {
-  role: "admin" | "colaborador";
+  role: "admin" | "colaborador" | "cliente";
 }
 
 export function SideNav({ role }: SideNavProps) {
   const pathname = usePathname();
-  const items: NavItem[] = role === "admin" ? ADMIN_DESKTOP_NAV : COLABORADOR_NAV;
+  const items: NavItem[] =
+    role === "admin" ? ADMIN_DESKTOP_NAV
+    : role === "colaborador" ? COLABORADOR_NAV
+    : CLIENTE_DESKTOP_NAV;
 
   return (
     <aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 border-r border-neutral-200 bg-white md:block">

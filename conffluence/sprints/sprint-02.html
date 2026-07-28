@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sprint-02</title>
+</head>
+<body>
+<h1>Sprint 02 — Booking público + Panel admin</h1>
+
+<p><strong>Release</strong>: v0.1.0 | <strong>Período</strong>: Semana 05–08 (Año 1) | <strong>Cadencia</strong>: 4 semanas</p>
+
+<h2>Sprint Goal</h2>
+
+<blockquote><p>Permitir que los clientes reserven citas online sin registro y que el admin gestione la agenda</p></blockquote>
+
+<h2>Backlog</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>User Story</th>
+      <th>Pts</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>US-009</td>
+      <td>Como cliente, quiero reservar cita online sin registro</td>
+      <td>13</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>US-013</td>
+      <td>Como admin, quiero dashboard con KPIs</td>
+      <td>13</td>
+      <td>✅ (parcial)</td>
+    </tr>
+    <tr>
+      <td>US-014</td>
+      <td>Como admin, quiero CRUD de citas con filtros</td>
+      <td>8</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td><strong>Total</strong></td>
+      <td></td>
+      <td><strong>34</strong></td>
+      <td><strong>✅</strong> Sprint comprometió 18 pts iniciales, completó 18</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Daily highlights</h2>
+
+<ul>
+  <li>D1–D5: Booking multi-step (servicio → colaboradora → fecha/hora → datos)</li>
+  <li>D6–D10: Dashboard admin con citas del día</li>
+  <li>D11–D15: CRUD citas con filtros por estado/fecha/colaboradora</li>
+  <li>D16–D20: <strong>Impedimento</strong>: BD tenía tablas Laravel legacy → script de migración manual</li>
+</ul>
+
+<h2>Sprint Review outcome</h2>
+
+<blockquote><p>✅ <strong>Aceptado</strong>: "Reservar sin login es justo lo que necesito" — Yvette</p></blockquote>
+
+<h2>Retrospective actions</h2>
+
+<ul>
+  <li><strong>Stop</strong>: Asumir que la BD está limpia</li>
+  <li><strong>Start</strong>: Script <code>verify-db.ts</code> para diagnóstico rápido</li>
+  <li>Crear script de migración manual (drizzle-kit push no funciona con tablas legacy)</li>
+</ul>
+</body>
+</html>

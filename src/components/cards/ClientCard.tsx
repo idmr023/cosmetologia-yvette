@@ -1,10 +1,9 @@
 "use client";
 
-import { Phone, CalendarPlus, Pencil, Trash2, Eye, MessageSquare } from "lucide-react";
-import { Card } from "@/components/ui/Card";
+import { CalendarPlus, Pencil, Trash2, Eye, MessageSquare } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
-import { ThreeDotMenu } from "@/components/ui/ThreeDotMenu";
-import { formatDate, whatsappLink } from "@/lib/utils";
+import { DataCard } from "@/components/ui/DataCard";
+import { formatDate } from "@/lib/utils";
 import type { Client } from "@/hooks/useClients";
 
 interface ClientCardProps {
@@ -18,38 +17,20 @@ export function ClientCard({ client, onEdit, onDelete, onView }: ClientCardProps
   const fullName = `${client.firstName} ${client.lastName}`;
 
   return (
-    <Card className="flex flex-col gap-3">
-      <div className="flex items-start justify-between">
-        <div className="flex flex-col gap-0.5">
-          <h3 className="text-base font-semibold text-ink">{fullName}</h3>
-          <a
-            href={whatsappLink(client.phone)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-sm text-neutral-500"
-          >
-            <Phone className="h-3.5 w-3.5" />
-            {client.phone}
-          </a>
-        </div>
-        <ThreeDotMenu
-          items={[
-            { label: "Ver detalle", icon: Eye, onClick: () => onView?.(client) },
-            { label: "Editar", icon: Pencil, onClick: () => onEdit?.(client) },
-            {
-              label: "Eliminar",
-              icon: Trash2,
-              danger: true,
-              onClick: () => onDelete?.(client),
-            },
-          ]}
-        />
-      </div>
-
+    <DataCard
+      header={{ title: fullName, subtitle: client.phone }}
+      menu={
+        onEdit || onDelete || onView
+          ? [
+              ...(onView ? [{ label: "Ver detalle", icon: Eye, onClick: () => onView(client) }] : []),
+              ...(onEdit ? [{ label: "Editar", icon: Pencil, onClick: () => onEdit(client) }] : []),
+              ...(onDelete ? [{ label: "Eliminar", icon: Trash2, danger: true as const, onClick: () => onDelete(client) }] : []),
+            ]
+          : undefined
+      }
+    >
       <div className="flex gap-2">
-        {client.email && (
-          <Badge variant="neutral">{client.email}</Badge>
-        )}
+        {client.email && <Badge variant="neutral">{client.email}</Badge>}
         {client.createdAt && (
           <Badge variant="default">
             <CalendarPlus className="mr-1 h-3 w-3" />
@@ -64,6 +45,6 @@ export function ClientCard({ client, onEdit, onDelete, onView }: ClientCardProps
           {client.notes}
         </p>
       )}
-    </Card>
+    </DataCard>
   );
 }

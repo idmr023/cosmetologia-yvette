@@ -1,21 +1,40 @@
 "use client";
 
-import { TrendingUp, DollarSign, CalendarDays, BarChart3, Loader2 } from "lucide-react";
+import { TrendingUp, DollarSign, CalendarDays, BarChart3, Loader2, Download } from "lucide-react";
 import { TopBar } from "@/components/navigation/TopBar";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { useReports } from "@/hooks/useReports";
 import { formatCurrency } from "@/lib/utils";
+import { exportToPDF, exportToCSV } from "@/lib/exportUtils";
 
 export default function ReportesPage() {
   const { data, loading, desde, setDesde, hasta, setHasta, refresh } = useReports();
+
+  function handleExportPDF() {
+    if (!data) return;
+    const headers = ["Colaboradora", "Citas", "Ingresos"];
+    const rows = data.byColaborador.map((c) => [c.fullName, c.count, formatCurrency(c.total)]);
+    exportToPDF("Reporte de Ingresos", headers, rows, `reporte-${desde}-${hasta}`);
+  }
+
+  function handleExportCSV() {
+    if (!data) return;
+    const headers = ["Colaboradora", "Citas", "Ingresos", "Servicio", "Veces"];
+    const rows = [
+      ...data.byColaborador.map((c) => [c.fullName, c.count, c.total]),
+      [],
+      ["--- Servicios ---", "", ""],
+      ...data.topServices.map((s) => [s.name, s.count, s.revenue]),
+    ];
+    exportToCSV(`reporte-${desde}-${hasta}`, headers, rows);
+  }
 
   return (
     <>
       <TopBar title="Reportes" />
 
       <div className="mx-auto max-w-2xl space-y-4 p-4 md:max-w-4xl">
-        {/* Filtros de fecha */}
         <Card className="flex flex-col gap-3 sm:flex-row sm:items-end">
           <div className="flex-1">
             <label className="mb-1 block text-sm font-medium text-neutral-700">Desde</label>
@@ -35,7 +54,19 @@ export default function ReportesPage() {
               className="min-h-touch w-full rounded-xl border border-neutral-300 bg-white px-4 text-base text-ink focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
             />
           </div>
-          <Button size="sm" onClick={refresh}>Filtrar</Button>
+          <div className="flex gap-2">
+            <Button size="sm" onClick={refresh}>Filtrar</Button>
+            {data && (
+              <>
+                <Button size="sm" variant="outline" onClick={handleExportPDF}>
+                  <Download className="h-4 w-4" />
+                </Button>
+                <Button size="sm" variant="outline" onClick={handleExportCSV}>
+                  CSV
+                </Button>
+              </>
+            )}
+          </div>
         </Card>
 
         {loading ? (
@@ -44,7 +75,6 @@ export default function ReportesPage() {
           </div>
         ) : data ? (
           <>
-            {/* Cards resumen */}
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
               <Card className="flex flex-col gap-2">
                 <DollarSign className="h-5 w-5 text-green-600" />
@@ -70,7 +100,6 @@ export default function ReportesPage() {
               </Card>
             </div>
 
-            {/* Por estado */}
             <Card className="space-y-3">
               <h3 className="text-base font-semibold text-ink">Citas por estado</h3>
               <div className="flex flex-wrap gap-2">
@@ -85,7 +114,6 @@ export default function ReportesPage() {
               </div>
             </Card>
 
-            {/* Por colaboradora */}
             <Card className="space-y-3">
               <h3 className="text-base font-semibold text-ink">Ingresos por colaboradora</h3>
               {data.byColaborador.map((c) => (
@@ -102,7 +130,6 @@ export default function ReportesPage() {
               )}
             </Card>
 
-            {/* Servicios top */}
             <Card className="space-y-3">
               <h3 className="text-base font-semibold text-ink">Servicios más populares</h3>
               <div className="flex flex-col gap-2">

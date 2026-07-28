@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>12-incremento-release-notes</title>
+</head>
+<body>
+<h1>12 — Incremento: Release Notes</h1>
+
+<h2>v0.1.0 — MVP (Sprints 01-03)</h2>
+
+<p><strong>Fecha de release</strong>: Fin Sprint 03 (Año 1, Mes 3)</p>
+
+<h3>Nuevo</h3>
+
+<ul>
+  <li>Landing page responsiva (Hero, About, Services, Gallery, CTA, Footer)</li>
+  <li>Booking público: selección de servicio → colaboradora → fecha/hora → datos del cliente</li>
+  <li>Panel admin: dashboard con citas del día, CRUD de citas, clientes, servicios</li>
+  <li>Panel colaborador: mis citas, perfil</li>
+  <li>Autenticación con NextAuth.js + bcrypt</li>
+  <li>Seed con 1 admin (Yvette), 3 colaboradoras (Elizabeth, Lourdes), 26 servicios</li>
+  <li>Base de datos con Drizzle ORM + Neon PostgreSQL (10 tablas iniciales)</li>
+</ul>
+
+<h3>Technical</h3>
+
+<ul>
+  <li>Mobile-first Tailwind CSS</li>
+  <li>next.config.mjs con rewrites para API</li>
+</ul>
+
+<hr>
+
+<h2>v0.2.0 — Refactor + Seguridad (Sprints 04-06)</h2>
+
+<p><strong>Fecha de release</strong>: Fin Sprint 06 (Año 1, Mes 6)</p>
+
+<h3>Nuevo</h3>
+
+<ul>
+  <li>Backend Express Gateway independiente en <code>backend/</code></li>
+  <li>Repository Pattern (7 DAOs: appointment, client, colaborador, commission, inventory, cashRegister, service)</li>
+  <li>Stack de middleware: JWT auth, rate-limit, Helmet, CORS, errorHandler</li>
+  <li>Argon2id con migración automática desde bcrypt en login exitoso</li>
+  <li>Refresh tokens con rotación (Access 15min + Refresh 7d)</li>
+  <li>MFA/TOTP opcional con otplib + QR code</li>
+  <li>Google OAuth</li>
+  <li>Módulo de caja: apertura, cierre, gastos, diferencia</li>
+  <li>Módulo de comisiones por colaboradora</li>
+  <li>Row Level Security en 5 tablas transaccionales</li>
+  <li>Auditoría WORM (Write-Once, Read-Many) con triggers AFTER ROW caputrando JSONB de OLD/NEW</li>
+  <li>Rate limiting por endpoint</li>
+</ul>
+
+<h3>Technical</h3>
+
+<ul>
+  <li><code>npm run dev:all</code> para frontend + backend simultáneo</li>
+  <li>GitHub Actions CI (lint → typecheck → build)</li>
+  <li>Jest + Supertest configurado (2 suites iniciales)</li>
+  <li>Circuit breaker + retry pattern en <code>backend/src/lib/resilience.ts</code></li>
+  <li>Endpoint de métricas en <code>/api/metrics</code></li>
+  <li>pgcrypto para column-level encryption</li>
+</ul>
+
+<hr>
+
+<h2>v0.3.0 — Features de negocio (Sprints 07-09)</h2>
+
+<p><strong>Fecha de release</strong>: Fin Sprint 09 (Año 2, Mes 3)</p>
+
+<h3>Nuevo</h3>
+
+<ul>
+  <li>Auto-agendamiento mejorado con time slot picker (2 semanas vista, slots en tiempo real)</li>
+  <li>Boleta única B{YYYYMMDD}-{ID} por cita</li>
+  <li>Notificaciones multicanal: WhatsApp (ultramsg), recordatorios 24h antes, confirmaciones post-cita</li>
+  <li><strong>Programa de fidelización</strong>:</li>
+  <li>  - 3 niveles: Bronce (0pts), Plata (200pts, 5% desc), Oro (500pts, 10% desc + cumpleaños gratis)</li>
+  <li>  - 1 punto por S/ 1.00 gastado</li>
+  <li>  - Recompensas canjeables desde el LoyaltyCard del cliente</li>
+  <li>  - Referidos con código único (10% desc para el referidor)</li>
+  <li>  - 7 nuevas tablas: <code>loyalty_tiers</code>, <code>loyalty_points</code>, <code>loyalty_transactions</code>, <code>loyalty_rewards</code>, <code>client_rewards</code>, <code>referral_codes</code>, <code>referral_usage</code></li>
+  <li><strong>Reseñas</strong>: rating 1-5, comentario, moderación admin, sección pública en landing</li>
+  <li><strong>Dashboard analítico</strong>: KPIs (ingresos, citas, clientes nuevos, ocupación), heatmap por hora, servicios top, colaboradoras top, variación % vs período anterior</li>
+  <li><strong>E-commerce</strong>:</li>
+  <li>  - Catálogo público con filtro por categoría y stock</li>
+  <li>  - Carrito persistente (Zustand + localStorage)</li>
+  <li>  - Checkout multi-step (datos → entrega → pago → resumen → confirmación)</li>
+  <li>  - Tracking de órdenes: <code>GET /orden/[id]</code> pública</li>
+  <li>  - Tablas <code>orders</code>, <code>order_items</code> con seguimiento de estado</li>
+</ul>
+
+<h3>Changed</h3>
+
+<ul>
+  <li>SideNav y MobileMenuGrid actualizados con 3 nuevas rutas (Analítica, Fidelización, Reseñas)</li>
+  <li><code>navConfig.ts</code> con 13 items desktop, 5 mobile</li>
+  <li><code>PageShell</code> unifica layout admin</li>
+  <li><code>FilterChips&lt;T&gt;</code> genérico para búsqueda y filtros</li>
+</ul>
+
+<hr>
+
+<h2>v0.4.0 — Testing, documentación y cierre (Sprints 10-12)</h2>
+
+<p><strong>Fecha de release</strong>: Fin Sprint 12 (Año 2, Mes 12)</p>
+
+<h3>Nuevo</h3>
+
+<ul>
+  <li><strong>Playwright E2E</strong>: 16 spec files cubriendo flujos públicos (landing, reservar, tienda, review), admin (dashboard, citas, clientes, analitica, fidelizacion, resenas, inventario, comisiones, colaboradores, reportes) y colaborador (mis-citas, cajas)</li>
+  <li><strong>CI/CD</strong>: GitHub Actions con 3 jobs (frontend typecheck+lint+build, backend typecheck+test, E2E)</li>
+  <li><strong>PWA</strong>: Service Worker en <code>public/sw.js</code>, RegisterSW en layout raíz, cache API con <code>idb-keyval</code> (TTL 5 min), sync queue offline con Zustand</li>
+  <li><strong>Documentación técnica</strong>: 8 secciones en <code>docs/</code> (arquitectura, componentes, API, BD, seguridad, performance, monitoreo, HA, testing usability)</li>
+  <li><strong>Monitoreo</strong>: Sentry para errores, middleware de métricas con Prometheus, Pino para logging estructurado, Clinic.js para profiling</li>
+  <li><strong>Health checks</strong> y graceful shutdown</li>
+</ul>
+
+<h3>Fixed</h3>
+
+<ul>
+  <li>Hydration mismatches en panel admin (webpack cache)</li>
+  <li>Login lockout por <code>login_attempts</code> acumulados</li>
+  <li>Touch targets < 44px en caja (corregido con <code>min-h-touch</code>)</li>
+  <li>Tipo de hash incompatible entre bcrypt y argon2 (migración controlada)</li>
+</ul>
+
+<h3>Technical Debt</h3>
+
+<ul>
+  <li>248/249 story points completados (99.6%)</li>
+  <li>0 defectos abiertos al cierre</li>
+  <li>TypeScript strict mode sin errores</li>
+  <li>ESLint 0 errores</li>
+</ul>
+
+<hr>
+
+<h2>Resumen general del proyecto</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Métrica</th>
+      <th>Valor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Duración total</td>
+      <td>2 años (12 sprints de 4 semanas)</td>
+    </tr>
+    <tr>
+      <td>Story Points completados</td>
+      <td>248/249 (99.6%)</td>
+    </tr>
+    <tr>
+      <td>Releases</td>
+      <td>4 (v0.1.0 → v0.4.0)</td>
+    </tr>
+    <tr>
+      <td>Archivos TypeScript</td>
+      <td>190+</td>
+    </tr>
+    <tr>
+      <td>Tablas BD</td>
+      <td>28</td>
+    </tr>
+    <tr>
+      <td>Rutas API backend</td>
+      <td>17 módulos</td>
+    </tr>
+    <tr>
+      <td>Repositorios DAO</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>Hooks frontend</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>Stores Zustand</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>Páginas frontend</td>
+      <td>32 (8 públicas + 20 admin + 4 colaborador)</td>
+    </tr>
+    <tr>
+      <td>Tests E2E</td>
+      <td>16 specs (Playwright)</td>
+    </tr>
+    <tr>
+      <td>Documentación técnica</td>
+      <td>8 secciones + 12 páginas SCRUM</td>
+    </tr>
+    <tr>
+      <td>CI</td>
+      <td>GitHub Actions (3 jobs, ~8 min)</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>04-definition-of-done</title>
+</head>
+<body>
+<h1>04 — Definition of Done (DoD)</h1>
+
+<p>Toda User Story marcada como "Done" debe cumplir <strong>todos</strong> los siguientes criterios:</p>
+
+<h2>Criterios técnicos</h2>
+
+<ul>
+  <li><strong>TypeScript</strong>: <code>tsc --noEmit</code> sin errores (strict mode)</li>
+  <li><strong>Lint</strong>: <code>eslint</code> sin errores ni warnings</li>
+  <li><strong>Build</strong>: <code>npm run build</code> exitoso (frontend + backend)</li>
+  <li><strong>Unit tests</strong>: las pruebas unitarias nuevas pasan (si aplica)</li>
+  <li><strong>E2E tests</strong>: los tests de Playwright del flujo afectado pasan</li>
+  <li><strong>Hydration</strong>: sin warnings de hidratación en consola del navegador</li>
+</ul>
+
+<h2>Criterios de producto</h2>
+
+<ul>
+  <li><strong>Aceptación del PO</strong>: la funcionalidad se demuestra en Sprint Review y se marca como "Accepted" en el Sprint Backlog</li>
+  <li><strong>UX mobile-first</strong>: la funcionalidad es utilizable en viewport < 640px (mobile) y ≥ 1024px (desktop)</li>
+  <li><strong>Touch targets</strong>: todos los botones y enlaces miden mínimo 44×44px</li>
+  <li><strong>Sin alert()/prompt()</strong>: las interacciones del usuario usan la UI del sistema (modales, sheets, toasts)</li>
+  <li><strong>Código sin comentarios</strong>: el código nuevo no incluye comentarios superfluos (salvo lógica no obvia)</li>
+</ul>
+
+<h2>Criterios de integridad</h2>
+
+<ul>
+  <li><strong>Cobertura de migración</strong>: si hubo cambios de schema, la migración Drizzle está generada y aplicada</li>
+  <li><strong>Seed actualizado</strong>: si se agregaron tablas, el seed script las considera</li>
+  <li><strong>CHANGELOG actualizado</strong>: el archivo <code>docs/CHANGELOG.md</code> refleja los cambios de la release</li>
+  <li><strong>Logs seguros</strong>: ningún secret/token/password se loggea en ninguna capa</li>
+  <li><strong>Sin regresiones</strong>: los tests existentes continúan pasando</li>
+</ul>
+</body>
+</html>

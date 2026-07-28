@@ -9,6 +9,7 @@ import {
   jsonb,
   pgEnum,
   primaryKey,
+  unique,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -40,9 +41,11 @@ export const users = pgTable("users", {
 
 export const clients = pgTable("clients", {
   id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }).unique(),
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
-  phone: text("phone").notNull().unique(),
+  dni: text("dni").unique().notNull(),
+  phone: text("phone").notNull(),
   email: text("email"),
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -137,15 +140,6 @@ export const commissions = pgTable("commissions", {
   settledAt: timestamp("settled_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
-
-export const usersRelations = relations(users, ({ one }) => ({
-  colaborador: one(colaboradores, { fields: [users.id], references: [colaboradores.userId] }),
-}));
-
-export const clientsRelations = relations(clients, ({ many }) => ({
-  appointments: many(appointments),
-  history: many(serviceHistory),
-}));
 
 export const colaboradoresRelations = relations(colaboradores, ({ many }) => ({
   appointments: many(appointments),
@@ -246,6 +240,17 @@ export const cashMovementsRelations = relations(cashMovements, ({ one }) => ({
   }),
 }));
 
+export const auditLogs = pgTable("audit_logs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tableName: text("table_name").notNull(),
+  recordId: uuid("record_id").notNull(),
+  operation: text("operation").notNull(),
+  oldData: jsonb("old_data"),
+  newData: jsonb("new_data"),
+  changedBy: uuid("changed_by"),
+  changedAt: timestamp("changed_at").defaultNow().notNull(),
+});
+
 export const auditLog = pgTable("audit_log", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
@@ -279,14 +284,305 @@ export type Appointment = typeof appointments.$inferSelect;
 export type InventoryItem = typeof inventory.$inferSelect;
 export type ServiceHistory = typeof serviceHistory.$inferSelect;
 export type Commission = typeof commissions.$inferSelect;
+export const refreshTokens = pgTable("refresh_tokens", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
+  tokenHash: text("token_hash").notNull(),
+  isRevoked: boolean("is_revoked").default(false).notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const userMfa = pgTable("user_mfa", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull()
+    .unique(),
+  secret: text("secret").notNull(),
+  isEnabled: boolean("is_enabled").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const settings = pgTable("settings", {
   key: text("key").primaryKey(),
   value: text("value").notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const loyaltyTiers = pgTable("loyalty_tiers", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull().unique(),
+  minPoints: integer("min_points").notNull().default(0),
+  discountPct: decimal("discount_pct", { precision: 5, scale: 2 }).default("0"),
+  color: text("color").default("#C9A227"),
+  benefits: jsonb("benefits").default([]),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const loyaltyPoints = pgTable("loyalty_points", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  clientId: uuid("client_id")
+    .references(() => clients.id, { onDelete: "cascade" })
+    .notNull(),
+  points: integer("points").notNull().default(0),
+  totalEarned: integer("total_earned").notNull().default(0),
+  totalRedeemed: integer("total_redeemed").notNull().default(0),
+  tierId: uuid("tier_id").references(() => loyaltyTiers.id),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (t) => ({
+  clientUnique: unique().on(t.clientId),
+}));
+
+export const loyaltyTransactions = pgTable("loyalty_transactions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  clientId: uuid("client_id")
+    .references(() => clients.id, { onDelete: "cascade" })
+    .notNull(),
+  appointmentId: uuid("appointment_id").references(() => appointments.id, {
+    onDelete: "set null",
+  }),
+  points: integer("points").notNull(),
+  type: text("type").notNull(),
+  description: text("description"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const loyaltyRewards = pgTable("loyalty_rewards", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  description: text("description"),
+  pointsCost: integer("points_cost").notNull(),
+  rewardType: text("reward_type").notNull(),
+  rewardValue: text("reward_value"),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const clientRewards = pgTable("client_rewards", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  clientId: uuid("client_id")
+    .references(() => clients.id, { onDelete: "cascade" })
+    .notNull(),
+  rewardId: uuid("reward_id")
+    .references(() => loyaltyRewards.id)
+    .notNull(),
+  redeemedAt: timestamp("redeemed_at").defaultNow().notNull(),
+  usedAt: timestamp("used_at"),
+  code: text("code").notNull().unique(),
+});
+
+export const reviews = pgTable("reviews", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  appointmentId: uuid("appointment_id")
+    .references(() => appointments.id, { onDelete: "set null" })
+    .notNull()
+    .unique(),
+  clientId: uuid("client_id")
+    .references(() => clients.id, { onDelete: "cascade" })
+    .notNull(),
+  colaboradorId: uuid("colaborador_id")
+    .references(() => colaboradores.id)
+    .notNull(),
+  serviceId: uuid("service_id").references(() => services.id),
+  rating: integer("rating").notNull(),
+  comment: text("comment"),
+  isPublic: boolean("is_public").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const notifications = pgTable("notifications", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  type: text("type").notNull(),
+  channel: text("channel").notNull(),
+  recipientId: text("recipient_id"),
+  title: text("title"),
+  body: text("body").notNull(),
+  metadata: jsonb("metadata"),
+  status: text("status").default("pending").notNull(),
+  sentAt: timestamp("sent_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const orders = pgTable("orders", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  clientId: uuid("client_id")
+    .references(() => clients.id, { onDelete: "cascade" })
+    .notNull(),
+  status: text("status").notNull().default("pendiente"),
+  totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull(),
+  paymentMethod: text("payment_method"),
+  paymentStatus: text("payment_status").default("pendiente"),
+  paidAt: timestamp("paid_at"),
+  shippingAddress: text("shipping_address"),
+  deliveryMethod: text("delivery_method").default("recojo"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const orderItems = pgTable("order_items", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  orderId: uuid("order_id")
+    .references(() => orders.id, { onDelete: "cascade" })
+    .notNull(),
+  inventoryId: uuid("inventory_id")
+    .references(() => inventory.id)
+    .notNull(),
+  quantity: integer("quantity").notNull().default(1),
+  unitPrice: decimal("unit_price", { precision: 10, scale: 2 }).notNull(),
+});
+
+export const referralCodes = pgTable("referral_codes", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  clientId: uuid("client_id")
+    .references(() => clients.id, { onDelete: "cascade" })
+    .notNull()
+    .unique(),
+  code: text("code").notNull().unique(),
+  discountPct: decimal("discount_pct", { precision: 5, scale: 2 }).default("10"),
+  usageCount: integer("usage_count").default(0).notNull(),
+  maxUses: integer("max_uses").default(5),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const referralUsage = pgTable("referral_usage", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  referralCodeId: uuid("referral_code_id")
+    .references(() => referralCodes.id, { onDelete: "cascade" })
+    .notNull(),
+  referredClientId: uuid("referred_client_id")
+    .references(() => clients.id, { onDelete: "cascade" })
+    .notNull(),
+  appointmentId: uuid("appointment_id").references(() => appointments.id, {
+    onDelete: "set null",
+  }),
+  discountApplied: decimal("discount_applied", { precision: 10, scale: 2 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const usersRelations = relations(users, ({ one }) => ({
+  colaborador: one(colaboradores, {
+    fields: [users.id],
+    references: [colaboradores.userId],
+  }),
+  client: one(clients, { fields: [users.id], references: [clients.userId] }),
+}));
+
+export const clientsRelations = relations(clients, ({ one, many }) => ({
+  user: one(users, { fields: [clients.userId], references: [users.id] }),
+  appointments: many(appointments),
+  history: many(serviceHistory),
+  loyaltyPoints: one(loyaltyPoints),
+  orders: many(orders),
+  reviews: many(reviews),
+}));
+
+export const loyaltyPointsRelations = relations(loyaltyPoints, ({ one, many }) => ({
+  client: one(clients, {
+    fields: [loyaltyPoints.clientId],
+    references: [clients.id],
+  }),
+  tier: one(loyaltyTiers, {
+    fields: [loyaltyPoints.tierId],
+    references: [loyaltyTiers.id],
+  }),
+  transactions: many(loyaltyTransactions),
+}));
+
+export const loyaltyTransactionsRelations = relations(
+  loyaltyTransactions,
+  ({ one }) => ({
+    client: one(clients, {
+      fields: [loyaltyTransactions.clientId],
+      references: [clients.id],
+    }),
+    appointment: one(appointments, {
+      fields: [loyaltyTransactions.appointmentId],
+      references: [appointments.id],
+    }),
+  }),
+);
+
+export const reviewsRelations = relations(reviews, ({ one }) => ({
+  appointment: one(appointments, {
+    fields: [reviews.appointmentId],
+    references: [appointments.id],
+  }),
+  client: one(clients, {
+    fields: [reviews.clientId],
+    references: [clients.id],
+  }),
+  colaborador: one(colaboradores, {
+    fields: [reviews.colaboradorId],
+    references: [colaboradores.id],
+  }),
+  service: one(services, {
+    fields: [reviews.serviceId],
+    references: [services.id],
+  }),
+}));
+
+export const ordersRelations = relations(orders, ({ one, many }) => ({
+  client: one(clients, {
+    fields: [orders.clientId],
+    references: [clients.id],
+  }),
+  items: many(orderItems),
+}));
+
+export const orderItemsRelations = relations(orderItems, ({ one }) => ({
+  order: one(orders, {
+    fields: [orderItems.orderId],
+    references: [orders.id],
+  }),
+  product: one(inventory, {
+    fields: [orderItems.inventoryId],
+    references: [inventory.id],
+  }),
+}));
+
+export const referralCodesRelations = relations(
+  referralCodes,
+  ({ one, many }) => ({
+    client: one(clients, {
+      fields: [referralCodes.clientId],
+      references: [clients.id],
+    }),
+    usage: many(referralUsage),
+  }),
+);
+
+export const referralUsageRelations = relations(referralUsage, ({ one }) => ({
+  referralCode: one(referralCodes, {
+    fields: [referralUsage.referralCodeId],
+    references: [referralCodes.id],
+  }),
+  referredClient: one(clients, {
+    fields: [referralUsage.referredClientId],
+    references: [clients.id],
+  }),
+}));
+
 export type AuditLog = typeof auditLog.$inferSelect;
 export type LoginAttempt = typeof loginAttempts.$inferSelect;
 export type Setting = typeof settings.$inferSelect;
 export type CashRegister = typeof cashRegisters.$inferSelect;
 export type CashMovement = typeof cashMovements.$inferSelect;
+export type RefreshToken = typeof refreshTokens.$inferSelect;
+export type AuditLogs = typeof auditLogs.$inferSelect;
+export type UserMfa = typeof userMfa.$inferSelect;
+export type LoyaltyTier = typeof loyaltyTiers.$inferSelect;
+export type LoyaltyPoints = typeof loyaltyPoints.$inferSelect;
+export type LoyaltyTransaction = typeof loyaltyTransactions.$inferSelect;
+export type LoyaltyReward = typeof loyaltyRewards.$inferSelect;
+export type ClientReward = typeof clientRewards.$inferSelect;
+export type Review = typeof reviews.$inferSelect;
+export type Notification = typeof notifications.$inferSelect;
+export type Order = typeof orders.$inferSelect;
+export type OrderItem = typeof orderItems.$inferSelect;
+export type ReferralCode = typeof referralCodes.$inferSelect;
+export type ReferralUsage = typeof referralUsage.$inferSelect;

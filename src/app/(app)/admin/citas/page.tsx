@@ -1,16 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Loader2 } from "lucide-react";
-import { TopBar } from "@/components/navigation/TopBar";
-import { Button } from "@/components/ui/Button";
-import { Sheet, useSheetStore } from "@/components/ui/Sheet";
+import { Plus } from "lucide-react";
+import { PageShell } from "@/components/ui/PageShell";
+import { FilterChips } from "@/components/ui/FilterChips";
+import { useSheetStore } from "@/components/ui/Sheet";
 import { AppointmentCard } from "@/components/cards/AppointmentCard";
 import { AppointmentForm } from "@/components/modals/AppointmentForm";
 import { useAppointments, type AppointmentStatus } from "@/hooks/useAppointments";
-import { cn } from "@/lib/utils";
+import { apiFetch } from "@/lib/api";
 
-const FILTERS: { value: AppointmentStatus | "all"; label: string }[] = [
+const FILTERS = [
   { value: "all", label: "Todas" },
   { value: "pendiente", label: "Pendientes" },
   { value: "confirmada", label: "Confirmadas" },
@@ -19,7 +19,7 @@ const FILTERS: { value: AppointmentStatus | "all"; label: string }[] = [
 ];
 
 export default function CitasPage() {
-  const { appointments, filter, setFilter, statusLabels, loading, update } = useAppointments();
+  const { appointments, filter, setFilter, statusLabels, loading, refresh, update } = useAppointments();
   const sheet = useSheetStore();
   const [saving, setSaving] = useState(false);
 
@@ -33,29 +33,26 @@ export default function CitasPage() {
     );
   }
 
-  async function handleCreate(data: { clientId: string; serviceId: string; colaboradorId: string; startAt: string; notes: string }) {
+  async function handleCreate(data: { clientId: string; serviceIds: string[]; colaboradorId: string; startAt: string; endAt: string; notes: string }) {
     setSaving(true);
     try {
-      const servicesList = await fetch("/api/services").then(r => r.json()).catch(() => []);
-      const svc = servicesList.find((s: { id: string }) => s.id === data.serviceId);
-      const durationMin = svc?.durationMin ?? 60;
-      const start = new Date(data.startAt);
-      const end = new Date(start.getTime() + durationMin * 60000);
-
-      const res = await fetch("/api/appointments", {
+      const res = await apiFetch("/api/appointments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           clientId: data.clientId,
           colaboradorId: data.colaboradorId,
-          startAt: start.toISOString(),
-          endAt: end.toISOString(),
+          startAt: data.startAt,
+          endAt: data.endAt,
           notes: data.notes,
           status: "pendiente",
-          serviceIds: [data.serviceId],
+          serviceIds: data.serviceIds,
         }),
       });
-      if (res.ok) sheet.close();
+      if (res.ok) {
+        await refresh();
+        sheet.close();
+      }
     } catch {
       // error handled
     }
@@ -76,56 +73,26 @@ export default function CitasPage() {
 
   return (
     <>
-      <TopBar title="Citas" />
+      <PageShell
+        title="Citas"
+        action={{ label: "Nueva cita", icon: Plus, onClick: openNewAppointment }}
+        filters={<FilterChips options={FILTERS} value={filter} onChange={(v) => setFilter(v as AppointmentStatus | "all")} />}
+        loading={loading}
+        empty={appointments.length === 0}
+        emptyMessage="No hay citas en este filtro"
+      >
+        {appointments.map((apt) => (
+          <AppointmentCard
+            key={apt.id}
+            appointment={apt}
+            statusLabel={statusLabels[apt.status]}
+            onConfirm={() => handleConfirm(apt)}
+            onComplete={() => handleComplete(apt)}
+            onCancel={() => handleCancel(apt)}
+          />
+        ))}
+      </PageShell>
 
-      <div className="mx-auto max-w-2xl space-y-4 p-4 md:max-w-4xl">
-        <Button fullWidth size="lg" onClick={openNewAppointment}>
-          <Plus className="h-5 w-5" />
-          Nueva cita
-        </Button>
-
-        <div className="flex gap-2 overflow-x-auto pb-1">
-          {FILTERS.map((f) => (
-            <button
-              key={f.value}
-              onClick={() => setFilter(f.value)}
-              className={cn(
-                "min-h-touch whitespace-nowrap rounded-full px-4 text-sm font-medium transition-colors",
-                filter === f.value
-                  ? "bg-ink text-white"
-                  : "border border-neutral-200 text-neutral-600 hover:border-ink",
-              )}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
-
-        {loading ? (
-          <div className="flex justify-center py-8">
-            <Loader2 className="h-8 w-8 animate-spin text-gold" />
-          </div>
-        ) : appointments.length === 0 ? (
-          <div className="rounded-2xl border border-neutral-200 bg-white py-8 text-center text-sm text-neutral-400">
-            No hay citas en este filtro
-          </div>
-        ) : (
-          <div className="flex flex-col gap-3">
-            {appointments.map((apt) => (
-              <AppointmentCard
-                key={apt.id}
-                appointment={apt}
-                statusLabel={statusLabels[apt.status]}
-                onConfirm={() => handleConfirm(apt)}
-                onComplete={() => handleComplete(apt)}
-                onCancel={() => handleCancel(apt)}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      <Sheet />
     </>
   );
 }

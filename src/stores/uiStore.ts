@@ -16,7 +16,7 @@ function getInitialDark(): boolean {
 }
 
 export const useUIStore = create<UIState>((set) => ({
-  darkMode: false,
+  darkMode: getInitialDark(),
   toggleDarkMode: () =>
     set((state) => {
       const next = !state.darkMode;
@@ -30,11 +30,6 @@ export const useUIStore = create<UIState>((set) => ({
   setSheetOpen: (open) => set({ sheetOpen: open }),
 }));
 
-// Initialize dark mode on store creation
-if (typeof window !== "undefined") {
-  const initial = getInitialDark();
-  if (initial) {
-    document.documentElement.classList.add("dark");
-    useUIStore.setState({ darkMode: true });
-  }
+if (typeof window !== "undefined" && getInitialDark()) {
+  document.documentElement.classList.add("dark");
 }

@@ -2,12 +2,15 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useSession } from "next-auth/react";
+import { apiFetch } from "@/lib/api";
+import { unwrapResponse } from "@/lib/utils";
 
 export interface CalendarAppointment {
   id: string;
   clientName: string;
   clientPhone: string;
   services: string[];
+  colaboradorId: string;
   colaboradorName: string;
   startAt: string;
   status: string;
@@ -42,13 +45,18 @@ export function useColaboradorCalendar(): UseColaboradorCalendarReturn {
   const fetchAppointments = useCallback(async () => {
     if (!session?.user) return;
     try {
-      const res = await fetch("/api/appointments");
+      const res = await apiFetch("/api/appointments");
       if (!res.ok) throw new Error("Error al cargar citas");
-      const data = await res.json();
-      const userName = session.user.name?.split(" ")[0]?.toLowerCase() ?? "";
-      const mine = data.filter((a: CalendarAppointment) =>
-        a.colaboradorName?.toLowerCase().includes(userName),
-      );
+      const json = await res.json();
+      const raw = unwrapResponse<Record<string, unknown> & { services: { service: { name: string } }[] }>(json);
+      const data = raw.map((apt) => ({
+        ...apt,
+        services: apt.services?.map((s) => s.service.name) ?? [],
+      })) as CalendarAppointment[];
+      const colaboradorId = session.user.colaboradorId;
+      const mine = colaboradorId
+        ? data.filter((a: CalendarAppointment) => a.colaboradorId === colaboradorId)
+        : [];
       setAppointments(mine);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error");

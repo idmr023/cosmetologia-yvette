@@ -29,7 +29,10 @@ export default function CitaPublicaPage({ params }: { params: { id: string } }) 
       .then((r) => r.json())
       .then((d) => {
         if (d.error) setError(d.error);
-        else setData(d);
+        else setData({
+          ...d,
+          services: d.services?.map((s: { service?: { name: string }; name?: string }) => s.service?.name ?? s.name ?? "") ?? [],
+        });
       })
       .catch(() => setError("Error al cargar"))
       .finally(() => setLoading(false));

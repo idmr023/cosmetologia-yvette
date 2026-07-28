@@ -1,27 +1,53 @@
 "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { signIn, getSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Scissors, Loader2, AlertCircle, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
+import { useAuthStore } from "@/stores/authStore";
 
 const ROLE_REDIRECTS: Record<string, string> = {
   admin: "/admin/inicio",
   colaborador: "/colaborador/mis-citas",
-  cliente: "/",
+  cliente: "/cliente/inicio",
 };
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginInner />
+    </Suspense>
+  );
+}
+
+function LoginInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [mfaRequired, setMfaRequired] = useState(false);
+  const [mfaCode, setMfaCode] = useState("");
+  const setAccessToken = useAuthStore((s) => s.setAccessToken);
+  const setRefreshToken = useAuthStore((s) => s.setRefreshToken);
+  const setRole = useAuthStore((s) => s.setRole);
+
+  async function checkMfa() {
+    try {
+      const res = await fetch(`/api/auth/mfa-status?email=${encodeURIComponent(email)}`);
+      const data = await res.json();
+      return data.mfaEnabled === true;
+    } catch {
+      return false;
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -32,10 +58,20 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
+    if (!mfaRequired) {
+      const needsMfa = await checkMfa();
+      if (needsMfa) {
+        setMfaRequired(true);
+        setLoading(false);
+        return;
+      }
+    }
+
     const result = await signIn("credentials", {
       email,
       password,
       turnstileToken,
+      ...(mfaCode ? { mfaCode } : {}),
       redirect: false,
     });
 
@@ -45,10 +81,17 @@ export default function LoginPage() {
       return;
     }
 
-    const res = await fetch("/api/auth/session");
-    const session = await res.json();
+    const session = await getSession();
     const role = session?.user?.role ?? "cliente";
-    router.push(ROLE_REDIRECTS[role] ?? "/");
+    if (session?.accessToken) setAccessToken(session.accessToken);
+    if (session?.refreshToken) setRefreshToken(session.refreshToken);
+    setRole(role);
+    const fallback = ROLE_REDIRECTS[role] ?? "/";
+    if (callbackUrl && callbackUrl.startsWith("/") && !callbackUrl.startsWith("//")) {
+      router.push(callbackUrl);
+    } else {
+      router.push(fallback);
+    }
     router.refresh();
   }
 
@@ -84,6 +127,21 @@ export default function LoginPage() {
           autoComplete="current-password"
         />
 
+        {mfaRequired && (
+          <Input
+            id="mfaCode"
+            label="Código de verificación (Google Authenticator)"
+            type="text"
+            placeholder="000000"
+            value={mfaCode}
+            onChange={(e) => setMfaCode(e.target.value)}
+            required
+            autoComplete="one-time-code"
+            inputMode="numeric"
+            maxLength={6}
+          />
+        )}
+
         <TurnstileWidget
           onToken={setTurnstileToken}
           onExpire={() => setTurnstileToken(null)}
@@ -101,10 +159,12 @@ export default function LoginPage() {
           type="submit"
           size="lg"
           fullWidth
-          disabled={loading || !turnstileToken}
+          disabled={loading || !turnstileToken || (mfaRequired && mfaCode.length !== 6)}
         >
           {loading ? (
             <Loader2 className="h-5 w-5 animate-spin" />
+          ) : mfaRequired ? (
+            "Verificar código"
           ) : (
             "Ingresar"
           )}

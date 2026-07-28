@@ -11,11 +11,14 @@ export default withAuth(
     if (path.startsWith("/colaborador") && role !== "colaborador" && role !== "admin") {
       return NextResponse.rewrite(new URL("/403", req.url));
     }
+    if (path.startsWith("/cliente") && role !== "cliente" && role !== "admin") {
+      return NextResponse.rewrite(new URL("/403", req.url));
+    }
     return NextResponse.next();
   },
   { pages: { signIn: "/login" } },
 );
 
 export const config = {
-  matcher: ["/admin/:path*", "/colaborador/:path*", "/cliente/:path*"],
+  matcher: ["/admin/:path*", "/colaborador/:path*", "/cliente/:path*", "/reservar"],
 };

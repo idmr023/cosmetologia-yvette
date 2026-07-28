@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sprint-12</title>
+</head>
+<body>
+<h1>Sprint 12 — Cierre: Bug fixes + Performance + Release</h1>
+
+<p><strong>Release</strong>: v0.4.0 | <strong>Período</strong>: Semana 45–48 (Año 2) | <strong>Cadencia</strong>: 4 semanas</p>
+
+<h2>Sprint Goal</h2>
+
+<blockquote><p>Cerrar deuda técnica y preparar el producto para entrega final</p></blockquote>
+
+<h2>Backlog</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>User Story</th>
+      <th>Pts</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>TSK-016</td>
+      <td>Bug: resolver hydration warnings en panel admin</td>
+      <td>3</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>TSK-017</td>
+      <td>Performance: lazy loading en imágenes landing</td>
+      <td>2</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>TSK-018</td>
+      <td>Bug: login falla si BD tiene hashes legacy (bcrypt vs argon2)</td>
+      <td>5</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>TSK-019</td>
+      <td>Chore: limpiar tabla login_attempts en setup e2e</td>
+      <td>2</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>TSK-020</td>
+      <td>Chore: unificar .env entre frontend y backend</td>
+      <td>2</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>TSK-021</td>
+      <td>Circuit breaker + retry pattern (implementación propia)</td>
+      <td>5</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>TSK-022</td>
+      <td>Docs: completar release notes v0.4.0</td>
+      <td>3</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td><strong>Total</strong></td>
+      <td></td>
+      <td><strong>22</strong></td>
+      <td><strong>✅</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Daily highlights</h2>
+
+<ul>
+  <li>D1–D3: Hydration warnings → <code>clean: true</code> en next.config + limpiar cache webpack</li>
+  <li>D4–D6: Performance: lazy loading imágenes, optimizar Core Web Vitals</li>
+  <li>D7–D11: <strong>Bug crítico</strong>: login 401 porque <code>tryMigrateToArgon2</code> dejó hashes argon2 que el fallback de NextAuth no soporta → sincronizar <code>verifyPassword</code></li>
+  <li>D12–D14: E2E: setup limpia <code>login_attempts</code>, Turnstile bypass con test keys</li>
+  <li>D15–D17: Circuit breaker propio (reemplaza dependencia opossum)</li>
+  <li>D18–D20: Documentación de cierre. CHANGELOG unificado. Release v0.4.0</li>
+</ul>
+
+<h2>Sprint Review outcome</h2>
+
+<blockquote><p>✅ <strong>Aceptado</strong>: Cero defectos abiertos. 248/249 pts completados (99.6%)</p></blockquote>
+
+<h2>Retrospective actions</h2>
+
+<ul>
+  <li><strong>Start</strong>: Planificar mantenimiento post-entrega</li>
+  <li><strong>Stop</strong>: Agregar features nuevas en el último Sprint</li>
+  <li>Pendiente: deploy a producción (Railway / Vercel)</li>
+</ul>
+
+<hr>
+
+<p><strong>Fin del ciclo SCRUM — 12 sprints, 2 años, 248 story points entregados.</strong></p>
+</body>
+</html>

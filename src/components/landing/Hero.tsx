@@ -1,13 +1,7 @@
 import { ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { whatsappLink } from "@/lib/utils";
 
 export function Hero() {
-  const waLink = whatsappLink(
-    "51991697726",
-    "Hola, quisiera información sobre los servicios del Centro de Estética Yvette.",
-  );
-
   return (
     <section className="relative flex min-h-[100svh] items-center overflow-hidden bg-gradient-to-b from-pastel/40 via-white to-white pt-16">
       <div className="absolute right-0 top-1/4 hidden h-96 w-96 rounded-full bg-gold/10 blur-3xl lg:block" />
@@ -40,14 +34,6 @@ export function Hero() {
               Reservar cita
               <ArrowRight className="h-5 w-5" />
             </Link>
-            <a
-              href={waLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex min-h-touch items-center justify-center rounded-full border border-neutral-300 px-7 text-base font-medium text-ink transition-colors hover:border-ink"
-            >
-              WhatsApp
-            </a>
           </div>
 
           <div className="mt-4 flex gap-8 pt-4">

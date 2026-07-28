@@ -1,17 +1,12 @@
 "use client";
 
-import { Clock, User, Pencil, Check, X, CalendarCheck, MessageCircle } from "lucide-react";
-import { Card } from "@/components/ui/Card";
+import { User, Pencil, Check, X, CalendarCheck } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
-import { ThreeDotMenu } from "@/components/ui/ThreeDotMenu";
+import { DataCard } from "@/components/ui/DataCard";
 import { formatCurrency, formatTime, formatDate } from "@/lib/utils";
-import { waLink, statusChangeMessage } from "@/lib/whatsapp";
 import type { Appointment, AppointmentStatus } from "@/hooks/useAppointments";
 
-const STATUS_VARIANT: Record<
-  AppointmentStatus,
-  "gold" | "success" | "neutral" | "danger"
-> = {
+const STATUS_VARIANT: Record<AppointmentStatus, "gold" | "success" | "neutral" | "danger"> = {
   pendiente: "gold",
   confirmada: "success",
   completada: "neutral",
@@ -38,45 +33,25 @@ export function AppointmentCard({
   const date = new Date(appointment.startAt);
 
   return (
-    <Card className="flex flex-col gap-3">
-      <div className="flex items-start justify-between">
-        <div className="flex flex-col gap-0.5">
-          <h3 className="text-base font-semibold text-ink">
-            {appointment.clientName}
-          </h3>
-          <p className="flex items-center gap-1.5 text-sm text-neutral-500">
-            <Clock className="h-3.5 w-3.5" />
-            {formatDate(date.toISOString())} · {formatTime(date.toISOString())}
-          </p>
-        </div>
-        <div className="flex items-center gap-1">
-          <Badge variant={STATUS_VARIANT[appointment.status]}>
-            {statusLabel}
-          </Badge>
-          <ThreeDotMenu
-            items={[
-              { label: "Editar", icon: Pencil, onClick: () => onEdit?.(appointment) },
-              {
-                label: "Confirmar",
-                icon: Check,
-                onClick: () => onConfirm?.(appointment),
-              },
-              {
-                label: "Completar",
-                icon: CalendarCheck,
-                onClick: () => onComplete?.(appointment),
-              },
-              {
-                label: "Cancelar",
-                icon: X,
-                danger: true,
-                onClick: () => onCancel?.(appointment),
-              },
-            ]}
-          />
-        </div>
-      </div>
-
+    <DataCard
+      header={{
+        title: appointment.clientName,
+        subtitle: `${formatDate(date.toISOString())} · ${formatTime(date.toISOString())}`,
+      }}
+      headerRight={
+        <Badge variant={STATUS_VARIANT[appointment.status]}>{statusLabel}</Badge>
+      }
+      menu={
+        onEdit || onConfirm || onComplete || onCancel
+          ? [
+              ...(onEdit ? [{ label: "Editar", icon: Pencil, onClick: () => onEdit(appointment) }] : []),
+              ...(onConfirm ? [{ label: "Confirmar", icon: Check, onClick: () => onConfirm(appointment) }] : []),
+              ...(onComplete ? [{ label: "Completar", icon: CalendarCheck, onClick: () => onComplete(appointment) }] : []),
+              ...(onCancel ? [{ label: "Cancelar", icon: X, danger: true as const, onClick: () => onCancel(appointment) }] : []),
+            ]
+          : undefined
+      }
+    >
       <div className="flex flex-wrap gap-1.5">
         {appointment.services.map((s) => (
           <span
@@ -94,24 +69,11 @@ export function AppointmentCard({
           {appointment.colaboradorName}
         </span>
         <div className="flex items-center gap-2">
-          <a
-            href={waLink(appointment.clientPhone, statusChangeMessage({
-              clientName: appointment.clientName,
-              serviceName: appointment.services[0] ?? "",
-              status: statusLabel,
-            }))}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex min-h-touch min-w-touch items-center justify-center rounded-lg text-neutral-400 transition-colors hover:text-green-600"
-            title="Enviar WhatsApp"
-          >
-            <MessageCircle className="h-4 w-4" />
-          </a>
           <span className="text-sm font-semibold text-gold">
             {formatCurrency(appointment.totalPrice)}
           </span>
         </div>
       </div>
-    </Card>
+    </DataCard>
   );
 }

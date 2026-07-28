@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, Check, Loader2, CalendarDays, MapPin, User, Scissors } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { ArrowLeft, ArrowRight, Check, Loader2, CalendarDays, MapPin, User, Scissors, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Receipt, type ReceiptData } from "@/components/Receipt";
+import { useToast } from "@/components/ui/Toast";
 import { cn, formatCurrency } from "@/lib/utils";
+import { apiFetch } from "@/lib/api";
 
 interface ServiceOption {
   id: string;
@@ -20,12 +23,29 @@ interface ColaboradorOption {
   fullName: string;
   specialty: string | null;
 }
+interface TimeSlot {
+  start: string;
+  end: string;
+  label: string;
+}
 
 type Step = "service" | "colaborador" | "datetime" | "modality" | "client" | "summary" | "done";
 type Modality = "salon" | "domicilio";
 
+const WEEKDAYS = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+const MONTHS = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Set", "Oct", "Nov", "Dic"];
+
+function formatDateShort(d: Date): string {
+  return `${d.getDate()} ${MONTHS[d.getMonth()]}`;
+}
+
+function isSameDay(a: Date, b: Date): boolean {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+
 export default function ReservarPage() {
   const router = useRouter();
+  const { status } = useSession();
   const [step, setStep] = useState<Step>("service");
   const [services, setServices] = useState<ServiceOption[]>([]);
   const [colaboradores, setColaboradores] = useState<ColaboradorOption[]>([]);
@@ -35,14 +55,43 @@ export default function ReservarPage() {
   const [serviceId, setServiceId] = useState<string | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [colaboradorId, setColaboradorId] = useState<string | null>(null);
-  const [startAt, setStartAt] = useState<string>("");
+
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [calendarOffset, setCalendarOffset] = useState(0);
+  const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
+  const [slotsLoading, setSlotsLoading] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
+
   const [modality, setModality] = useState<Modality>("salon");
   const [clientName, setClientName] = useState("");
+  const [clientDni, setClientDni] = useState("");
   const [clientPhone, setClientPhone] = useState("");
   const [clientEmail, setClientEmail] = useState("");
 
   const [submitting, setSubmitting] = useState(false);
   const [receiptData, setReceiptData] = useState<ReceiptData | null>(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.replace("/login?callbackUrl=/reservar");
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    if (status !== "authenticated") return;
+    apiFetch("/api/clients/me")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.firstName) {
+          setClientName(`${data.firstName ?? ""} ${data.lastName ?? ""}`.trim());
+          setClientDni(data.dni ?? "");
+          setClientPhone(data.phone ?? "");
+          setClientEmail(data.email ?? "");
+        }
+      })
+      .catch(() => {});
+  }, [status]);
 
   useEffect(() => {
     fetch("/api/appointments/public")
@@ -87,7 +136,50 @@ export default function ReservarPage() {
     if (idx > 0) setStep(order[idx - 1]);
   }
 
+  const fetchSlots = useCallback(async (date: Date) => {
+    if (!colaboradorId || !serviceId) return;
+    setSlotsLoading(true);
+    setSelectedSlot(null);
+    try {
+      const dateStr = date.toISOString().split("T")[0];
+      const res = await fetch(`/api/appointments/available-slots?colaboradorId=${colaboradorId}&date=${dateStr}&serviceId=${serviceId}`);
+      const data = await res.json();
+      setAvailableSlots(data.slots ?? []);
+    } catch {
+      setAvailableSlots([]);
+    }
+    setSlotsLoading(false);
+  }, [colaboradorId, serviceId]);
+
+  useEffect(() => {
+    if (selectedDate) {
+      fetchSlots(selectedDate);
+    }
+  }, [selectedDate, fetchSlots]);
+
+  function getCalendarDays(): Date[] {
+    const today = new Date();
+    const start = new Date(today.getFullYear(), today.getMonth(), today.getDate() + calendarOffset * 7);
+    const days: Date[] = [];
+    for (let i = 0; i < 14; i++) {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      if (d.getDay() !== 0) days.push(d);
+    }
+    return days;
+  }
+
+  function handleDateSelect(date: Date) {
+    setSelectedDate(date);
+    setSelectedSlot(null);
+  }
+
+  function handleSlotSelect(slot: TimeSlot) {
+    setSelectedSlot(slot);
+  }
+
   async function handleConfirm() {
+    if (!selectedService || !selectedSlot) return;
     setSubmitting(true);
     try {
       const res = await fetch("/api/appointments/public", {
@@ -96,28 +188,30 @@ export default function ReservarPage() {
         body: JSON.stringify({
           serviceId,
           colaboradorId,
-          startAt,
+          startAt: selectedSlot.start,
+          endAt: selectedSlot.end,
           modality,
           clientName,
+          clientDni,
           clientPhone,
           clientEmail,
         }),
       });
       const data = await res.json();
       if (!res.ok) {
-        alert(data.error ?? "Error al reservar");
+        toast(data.error ?? "Error al reservar", "error");
         setSubmitting(false);
         return;
       }
       setReceiptData(data);
       setStep("done");
     } catch {
-      alert("Error de conexión");
+      toast("Error de conexión", "error");
     }
     setSubmitting(false);
   }
 
-  if (loading) {
+  if (loading || status === "loading" || status === "unauthenticated") {
     return (
       <div className="flex min-h-screen items-center justify-center bg-pastel/20">
         <Loader2 className="h-8 w-8 animate-spin text-gold" />
@@ -126,19 +220,21 @@ export default function ReservarPage() {
   }
 
   if (step === "done" && receiptData) {
-    return <Receipt data={receiptData} onBack={() => router.push("/")} />;
+    return <Receipt data={receiptData} onBack={() => router.push("/cliente/citas")} />;
   }
 
   const canNext =
     (step === "service" && serviceId) ||
     (step === "colaborador" && colaboradorId) ||
-    (step === "datetime" && startAt) ||
+    (step === "datetime" && selectedSlot) ||
     step === "modality" ||
-    (step === "client" && clientName && clientPhone);
+    (step === "client" && clientName && /^\d{8}$/.test(clientDni) && clientPhone);
+
+  const calendarDays = getCalendarDays();
+  const today = new Date();
 
   return (
     <div className="min-h-screen bg-pastel/20 pb-24">
-      {/* Header con progreso */}
       <header className="sticky top-0 z-30 border-b border-neutral-200 bg-white/95 px-4 py-3 backdrop-blur-md">
         <div className="mx-auto max-w-2xl">
           <div className="mb-2 flex items-center justify-between">
@@ -249,21 +345,102 @@ export default function ReservarPage() {
           </div>
         )}
 
-        {/* Step 3: Fecha y hora */}
+        {/* Step 3: Fecha y hora con disponibilidad real */}
         {step === "datetime" && (
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-sm font-medium text-neutral-700">
               <CalendarDays className="h-5 w-5 text-gold" />
               Elige fecha y hora
             </div>
-            <input
-              type="datetime-local"
-              value={startAt}
-              onChange={(e) => setStartAt(e.target.value)}
-              className="min-h-touch w-full rounded-xl border border-neutral-300 bg-white px-4 text-base text-ink focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
-            />
+
+            {/* Calendario de 2 semanas */}
+            <div className="rounded-2xl border border-neutral-200 bg-white p-3">
+              <div className="mb-2 flex items-center justify-between">
+                <button
+                  onClick={() => setCalendarOffset((p) => Math.max(0, p - 1))}
+                  disabled={calendarOffset === 0}
+                  className="min-h-touch min-w-touch rounded-lg p-1 text-neutral-500 disabled:opacity-30"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                <span className="text-sm font-semibold text-ink">
+                  {calendarDays.length > 0
+                    ? `${formatDateShort(calendarDays[0])} - ${formatDateShort(calendarDays[calendarDays.length - 1])}`
+                    : ""}
+                </span>
+                <button
+                  onClick={() => setCalendarOffset((p) => p + 1)}
+                  className="min-h-touch min-w-touch rounded-lg p-1 text-neutral-500"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {calendarDays.map((d) => {
+                  const isSelected = selectedDate && isSameDay(d, selectedDate);
+                  const isToday = isSameDay(d, today);
+                  return (
+                    <button
+                      key={d.toISOString()}
+                      onClick={() => handleDateSelect(d)}
+                      className={cn(
+                        "flex min-w-[48px] flex-col items-center rounded-xl px-2 py-2 text-sm transition-all",
+                        isSelected
+                          ? "bg-gold text-white"
+                          : "hover:bg-gold/10 border border-neutral-200",
+                        isToday && !isSelected && "border-gold/50",
+                      )}
+                    >
+                      <span className="text-[10px] font-medium uppercase">{WEEKDAYS[d.getDay()]}</span>
+                      <span className="text-base font-semibold">{d.getDate()}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Slots disponibles */}
+            {selectedDate && (
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-neutral-700">
+                  Horarios disponibles
+                  {selectedService && (
+                    <span className="ml-1 font-normal text-neutral-400">
+                      (duración aprox. {selectedService.durationMin} min)
+                    </span>
+                  )}
+                </p>
+                {slotsLoading ? (
+                  <div className="flex justify-center py-4">
+                    <Loader2 className="h-6 w-6 animate-spin text-gold" />
+                  </div>
+                ) : availableSlots.length === 0 ? (
+                  <p className="rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-700">
+                    No hay horarios disponibles para esta fecha. Intenta con otra fecha o especialista.
+                  </p>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {availableSlots.map((slot) => (
+                      <button
+                        key={slot.start}
+                        onClick={() => handleSlotSelect(slot)}
+                        className={cn(
+                          "min-h-touch rounded-xl border px-4 py-2 text-sm font-medium transition-all",
+                          selectedSlot?.start === slot.start
+                            ? "border-gold bg-gold text-white"
+                            : "border-neutral-200 bg-white text-ink hover:border-gold/50",
+                        )}
+                      >
+                        {slot.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             <p className="text-xs text-neutral-400">
-              Horario de atención: Lunes a Sábado, 9:00 AM a 7:00 PM
+              Horario: Lun-Sáb, 9:00 AM a 7:00 PM
             </p>
           </div>
         )}
@@ -331,6 +508,18 @@ export default function ReservarPage() {
               required
             />
             <Input
+              id="clientDni"
+              label="DNI"
+              type="text"
+              inputMode="numeric"
+              maxLength={8}
+              placeholder="12345678"
+              value={clientDni}
+              onChange={(e) => setClientDni(e.target.value.replace(/\D/g, ""))}
+              required
+              autoComplete="off"
+            />
+            <Input
               id="clientEmail"
               label="Email (opcional)"
               type="email"
@@ -352,15 +541,18 @@ export default function ReservarPage() {
               {selectedColaborador && (
                 <SummaryRow label="Especialista" value={selectedColaborador.fullName} />
               )}
-              <SummaryRow
-                label="Fecha y hora"
-                value={startAt ? new Date(startAt).toLocaleString("es-PE") : "—"}
-              />
+              {selectedSlot && (
+                <SummaryRow
+                  label="Fecha y hora"
+                  value={`${selectedDate ? formatDateShort(selectedDate) : ""} ${selectedSlot.label}`}
+                />
+              )}
               <SummaryRow
                 label="Modalidad"
                 value={modality === "salon" ? "En salón Yvette" : "A domicilio"}
               />
               <SummaryRow label="Cliente" value={clientName} />
+              <SummaryRow label="DNI" value={clientDni} />
               <SummaryRow label="Teléfono" value={clientPhone} />
               {selectedService && (
                 <div className="border-t border-neutral-100 pt-3">

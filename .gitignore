@@ -1,8 +1,14 @@
 node_modules
 .next
 .env.local
+.env
 .env*.local
+backend/.env
 *.log
 .DS_Store
 drizzle/meta
 .codebase-memory
+e2e/storage/
+playwright-report/
+test-results/
+backend/GOOGLE_CLIENT_SECRET.json

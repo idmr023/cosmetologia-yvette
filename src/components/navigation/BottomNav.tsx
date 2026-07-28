@@ -3,22 +3,26 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { ADMIN_MOBILE_NAV, COLABORADOR_NAV, type NavItem } from "./navConfig";
-import { useSheetStore, Sheet } from "@/components/ui/Sheet";
+import { ADMIN_MOBILE_NAV, COLABORADOR_NAV, CLIENTE_MOBILE_NAV, type NavItem } from "./navConfig";
+import { useSheetStore } from "@/components/ui/Sheet";
 import { MobileMenuGrid } from "@/components/modals/MobileMenuGrid";
 
 interface BottomNavProps {
-  role: "admin" | "colaborador";
+  role: "admin" | "colaborador" | "cliente";
 }
 
 export function BottomNav({ role }: BottomNavProps) {
   const pathname = usePathname();
   const sheet = useSheetStore();
-  const items: NavItem[] = role === "admin" ? ADMIN_MOBILE_NAV : COLABORADOR_NAV;
+  const items: NavItem[] =
+    role === "admin" ? ADMIN_MOBILE_NAV
+    : role === "colaborador" ? COLABORADOR_NAV
+    : CLIENTE_MOBILE_NAV;
 
   function handleClick(item: NavItem) {
     if (item.href === "") {
-      sheet.show(<MobileMenuGrid onNavigate={sheet.close} />);
+      const menuRole = role === "cliente" ? "cliente" : "admin";
+      sheet.show(<MobileMenuGrid onNavigate={sheet.close} role={menuRole} />);
     }
   }
 
@@ -61,7 +65,6 @@ export function BottomNav({ role }: BottomNavProps) {
           })}
         </div>
       </nav>
-      <Sheet />
     </>
   );
 }

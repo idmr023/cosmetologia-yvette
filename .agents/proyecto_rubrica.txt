@@ -1,0 +1,888 @@
+=== PÁGINA 1 ===
+ 
+ 
+Consigna para PROYECTO FINAL 
+ 
+1. Logro a evaluar:  
+Al finalizar la unidad, el estudiante evalúa la operación del sistema informático, verificando 
+su rendimiento, confiabilidad, mantenibilidad y flexibilidad. 
+ 
+2. Indicación general: 
+Deberán trabajar en el desarrollo de su proyecto de software en la empresa elegida. Para 
+este avance, se dará un seguimiento a la operación de la solución informática siguiendo 
+estándares internacionales. Así mismo, se realizará el mantenimiento a algún 
+componente del sistema. 
+ 
+3. Indicaciones específicas: 
+La evaluación es grupal. Los estudiantes entregarán un informe escrito (en formato MS 
+Word) y sustentarán su proyecto de manera oral y con apoyo de diapositivas. La entrega 
+es a través de la plataforma virtual de aprendizaje y debe incluir: 
+• Informe de avance en formato MS Word. 
+• Presentación de su exposición en formato PPT u otro formato de presentación de 
+diapositivas. 
+• Revisar el Anexo 1, donde encontrarás la estructura del informe. 
+ 
+El informe escrito deberá contener los siguientes artefactos: 
+ 
+Item Artefacto Descripción 
+1 Informe de Evaluación de 
+Rendimiento del Sistema 
+Documento donde el estudiante presenta los 
+resultados de la evaluación del rendimiento de 
+su sistema, alineados con la ISO 25010. 
+Incluye: Descripción del entorno de pruebas. 
+Métrica clave de rendimiento (p.e. tiempo 
+promedio de respuesta, tasa de uso de cpu, 
+ram, disco, red, etc.). Herramienta usada. 
+
+
+=== PÁGINA 2 ===
+Umbral esperado. Valor actual. Comparación 
+con los objetivos o SLA definidos. 
+Observaciones. Gráficos o tablas de 
+rendimiento obtenidos del monitoreo. 
+Conclusiones y acciones de mejora.   
+2 Evidencia de Monitoreo de 
+la Aplicación 
+ 
+Conjunto de evidencias (capturas, reportes o 
+dashboards) que demuestran el monitoreo 
+activo del sistema en producción. Incluye al 
+menos: uso de cpu, ram, disco, red, 
+configuración de alertas u otro a criterio del 
+docente. Se debe incluir también el uso de 
+herramientas como 
+Jprofiler/YourKit/Glowroot/Prefix y otra 
+herramienta Code Profiling a criterio del 
+docente 
+3 Pruebas de Carga y Estrés 
+(Load & Stress Test Report) 
+Documento que evidencia la ejecución de 
+pruebas automáticas de rendimiento para 
+evaluar el comportamiento del sistema bajo 
+diferentes niveles de carga. Incluye: 
+Descripción de los escenarios de prueba de 
+stress (usuarios simultáneos, tiempo promedio 
+ms, throughput, ratio de error, etc.). 
+Herramientas utilizadas. Resultados obtenidos 
+bajo diferentes niveles de carga. Gráficos o 
+reportes exportados de las herramientas. 
+Identificación de cuellos de botella y propuestas 
+de mejora. Se debe evidenciar, al menos, el 
+uso de Apache JMeter u otra herramienta a 
+criterio del docente. 
+4 Reporte de Pruebas de 
+Mantenimiento 
+Documento que presenta las evidencias de 
+pruebas realizadas tras una modificación o 
+mejora a un componente del sistema, validando 
+que los cambios no introducen defectos, que el 
+sistema es modular y reusable y que la 
+funcionalidad se mantiene estable en 
+producción. Incluye: Descripción del cambio 
+realizado. Tipo de mantenimiento (correctivo, 
+adaptativo, perfectivo o preventivo). Casos de 
+prueba ejecutados antes y después del cambio. 
+
+=== PÁGINA 3 ===
+ 
+Evidencias (logs, capturas, reportes 
+automáticos, etc.). Impacto del cambio sobre el 
+sistema. Estado final u otro a criterio del 
+docente. 
+5 Informe de Pruebas de Alta 
+Disponibilidad y 
+Recuperación ante 
+Desastres 
+Documento técnico que muestra las evidencias 
+de pruebas ejecutadas para validar la alta 
+disponibilidad y la capacidad de recuperación 
+del sistema en distintos escenarios simulados 
+en un ambiente de pruebas, como mínimo, 
+utilizando máquinas virtuales con el sistema 
+operativo Alma Linux. Incluye: Descripción del 
+escenario de prueba simulado (p.e. caída del 
+servidor, pérdida de datos, corte de red, etc.). 
+Descripción del entorno de prueba. 
+Herramientas utilizadas. Resultados 
+observados, métricas de recuperación. 
+Evidencias de las pruebas realizadas (logs, 
+capturas, reportes automáticos, etc.). Estado 
+final u otro a criterio del docente. 
+6 Historial de commits Evidencia del avance progresivo de desarrollo 
+de software en GitHub mediante el uso de 
+commits que permitan identificar: fecha y hora 
+de cada commit, autor del cambio, distribución 
+de trabajo por ramas y mensajes descriptivos 
+del cambio 
+ 
+ 
+La sustentación oral se realizará en el ambiente asignado a las clases del curso. Para su 
+ejecución se deberá tener en cuenta los siguientes aspectos: 
+• Todos los integrantes deberán participar en la sustentación 
+• La calificación es individual 
+• La sustentación deberá iniciar con el levantamiento de las observaciones o 
+aspectos de mejora realizados a la APF3 
+• Cada integrante deberá exponer sus principales aportes al proyecto 
+• Ningún integrante deberá repetir la exposición de otro integrante 
+• Se expondrá el proyecto, siguiendo un orden lógico y demostrando capacidad de 
+síntesis 
+
+=== PÁGINA 4 ===
+• Se demostrará el dominio del tema, argumentando y sustentando el proyecto. 
+• Se evidenciará el funcionamiento del sistema con alta disponibilidad 
+ 
+4. Recomendaciones 
+● Coordinarás con tu docente la viabilidad de tu proyecto antes de empezarlo a 
+desarrollar 
+● Asistirás a todas las sesiones y presentarás todas las actividades previas a la 
+entrega del informe para obtener retroalimentación 
+● Tomarás nota de toda la retroalimentación y realizarás las correcciones necesarias 
+indicadas por el docente 
+● Revisarás el material de la clase y tus anotaciones antes de elaborar el informe. 
+● Consultarás el material complementario del curso. 
+ 
+5. Criterios de evaluación 
+A continuación, podrás encontrar la rúbrica de evaluación con la que será evaluada la 
+actividad. Recuerda que también puedes encontrarla en la plataforma virtual de 
+aprendizaje. Asegúrate de leerla antes de realizar la actividad. 
+ 
+A tomar en cuenta en caso de plagio:  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+“Todo acto de copiar, intentarlo o dejar copiar, durante una prueba, examen, 
+práctica, trabajo o cualquier asignación académica, usando tanto el medio físico 
+como el electrónico, se encuentra normado en el Reglamento de Estudios y el 
+Reglamento de Disciplina del Estudiante vigentes en el Portal de Transparencia 
+y/o en el Portal del Estudiante”. 
+
+=== PÁGINA 5 ===
+ 
+RÚBRICA DEL PROYECTO FINAL 
+ 
+Criterio  Definición del criterio Estándar esperado    En proceso 2  En proceso 1 Inicial 
+Evaluación de 
+rendimiento 
+Se califica que el 
+estudiante evalúe el 
+rendimiento del 
+sistema mediante el 
+análisis crítico de 
+métricas clave, 
+interpretando 
+resultados obtenidos 
+en escenarios de carga 
+para determinar el nivel 
+de cumplimiento 
+esperado. 
+ 
+Evalúa el rendimiento del 
+sistema mediante el 
+análisis crítico de métricas 
+clave, interpretando 
+resultados obtenidos en 
+escenarios de carga para 
+determinar el nivel de 
+cumplimiento esperado 
+considerando los 
+siguientes elementos: 
+1) Descripción del entorno 
+de pruebas 
+2) Métricas evaluadas 
+3) Herramientas utilizadas 
+4) Resultados y 
+comparación con 
+umbrales/SLA 
+5) Gráficos y reportes de 
+monitoreo 
+6) Pruebas de carga y 
+estrés 
+7) Identificación de 
+cuellos de botella 
+8) Conclusiones y 
+acciones de mejora 
+ 
+Evalúa el rendimiento del 
+sistema mediante el 
+análisis crítico de métricas 
+clave, interpretando 
+resultados obtenidos en 
+escenarios de carga para 
+determinar el nivel de 
+cumplimiento esperado 
+considerando 7 de 8 de 
+los siguientes elementos: 
+1) Descripción del entorno 
+de pruebas 
+2) Métricas evaluadas 
+3) Herramientas utilizadas 
+4) Resultados y 
+comparación con 
+umbrales/SLA 
+5) Gráficos y reportes de 
+monitoreo 
+6) Pruebas de carga y 
+estrés 
+7) Identificación de 
+cuellos de botella 
+8) Conclusiones y 
+acciones de mejora 
+ 
+Evalúa el rendimiento del 
+sistema mediante el 
+análisis crítico de métricas 
+clave, interpretando 
+resultados obtenidos en 
+escenarios de carga para 
+determinar el nivel de 
+cumplimiento esperado 
+considerando 5 o 6 de los 
+siguientes elementos: 
+1) Descripción del entorno 
+de pruebas 
+2) Métricas evaluadas 
+3) Herramientas utilizadas 
+4) Resultados y 
+comparación con 
+umbrales/SLA 
+5) Gráficos y reportes de 
+monitoreo 
+6) Pruebas de carga y 
+estrés 
+7) Identificación de 
+cuellos de botella 
+8) Conclusiones y 
+acciones de mejora 
+ 
+Evalúa el rendimiento del 
+sistema mediante el 
+análisis crítico de métricas 
+clave, interpretando 
+resultados obtenidos en 
+escenarios de carga para 
+determinar el nivel de 
+cumplimiento esperado 
+considerando al menos 4 
+de los siguientes 
+elementos: 
+1) Descripción del entorno 
+de pruebas 
+2) Métricas evaluadas 
+3) Herramientas utilizadas 
+4) Resultados y 
+comparación con 
+umbrales/SLA 
+5) Gráficos y reportes de 
+monitoreo 
+6) Pruebas de carga y 
+estrés 
+7) Identificación de 
+cuellos de botella 
+8) Conclusiones y 
+acciones de mejora 
+
+=== PÁGINA 6 ===
+Criterio  Definición del criterio Estándar esperado    En proceso 2  En proceso 1 Inicial 
+ 
+4 3 2 1 
+Evaluación del 
+monitoreo y 
+mantenimiento 
+del sistema 
+Se califica que el 
+estudiante evalúe la 
+capacidad de 
+mantenimiento del 
+sistema mediante un 
+monitoreo continuo 
+según la ISO 25010. 
+Evalúa la capacidad de 
+mantenimiento del 
+sistema mediante un 
+monitoreo continuo según 
+la ISO 25010 y 
+considerando los 
+siguientes elementos: 
+1) Monitoreo de recursos 
+2) Reportes y capturas de 
+monitoreo 
+3) Perfilamiento de código 
+4) Observaciones y 
+conclusiones de 
+monitoreo 
+5) Escenario del cambio 
+realizado 
+6) Casos de prueba 
+ejecutados (antes y 
+después) 
+7) Impacto del cambio en 
+el sistema 
+8) Estado final y 
+conclusiones 
+Evalúa la capacidad de 
+mantenimiento del 
+sistema mediante un 
+monitoreo continuo según 
+la ISO 25010 y 
+considerando 7 de 8 los 
+siguientes elementos: 
+1) Monitoreo de recursos 
+2) Reportes y capturas de 
+monitoreo 
+3) Perfilamiento de código 
+4) Observaciones y 
+conclusiones de 
+monitoreo 
+5) Escenario del cambio 
+realizado 
+6) Casos de prueba 
+ejecutados (antes y 
+después) 
+7) Impacto del cambio en 
+el sistema 
+8) Estado final y 
+conclusiones 
+Evalúa la capacidad de 
+mantenimiento del 
+sistema mediante un 
+monitoreo continuo según 
+la ISO 25010 y 
+considerando 5 o 6 los 
+siguientes elementos: 
+1) Monitoreo de recursos 
+2) Reportes y capturas de 
+monitoreo 
+3) Perfilamiento de código 
+4) Observaciones y 
+conclusiones de 
+monitoreo 
+5) Escenario del cambio 
+realizado 
+6) Casos de prueba 
+ejecutados (antes y 
+después) 
+7) Impacto del cambio en 
+el sistema 
+8) Estado final y 
+conclusiones 
+Evalúa la capacidad de 
+mantenimiento del 
+sistema mediante un 
+monitoreo continuo según 
+la ISO 25010 y 
+considerando al menos 4 
+de los siguientes 
+elementos: 
+1) Monitoreo de recursos 
+2) Reportes y capturas de 
+monitoreo 
+3) Perfilamiento de código 
+4) Observaciones y 
+conclusiones de 
+monitoreo 
+5) Escenario del cambio 
+realizado 
+6) Casos de prueba 
+ejecutados (antes y 
+después) 
+7) Impacto del cambio en 
+el sistema 
+8) Estado final y 
+conclusiones 
+4 3 2 1 
+
+=== PÁGINA 7 ===
+ 
+Criterio  Definición del criterio Estándar esperado    En proceso 2  En proceso 1 Inicial 
+Evaluación de 
+alta 
+disponibilidad y 
+recuperación 
+de desastres 
+Se califica que el 
+estudiante evalúe la 
+capacidad del sistema 
+para mantener 
+disponibilidad y 
+tolerancia a fallos 
+mediante la ejecución 
+de escenarios de alta 
+disponibilidad y 
+recuperación de 
+desastres. 
+ 
+Evalúa la capacidad del 
+sistema para mantener 
+disponibilidad y tolerancia 
+a fallos mediante la 
+ejecución de escenarios 
+de alta disponibilidad y 
+recuperación 
+considerando los 
+siguientes elementos: 
+1) Escenarios de prueba 
+simulados 
+2) Métricas de 
+recuperación 
+3) Descripción del entorno 
+de pruebas 
+4) Herramientas y 
+configuraciones utilizadas 
+5) Evidencias de 
+ejecución de pruebas de 
+Alta Disponibilidad 
+6) Evidencias de 
+ejecución de pruebas de 
+Recuperación 
+7) Estado final y 
+conclusiones 
+Evalúa la capacidad del 
+sistema para mantener 
+disponibilidad y tolerancia 
+a fallos mediante la 
+ejecución de escenarios 
+de alta disponibilidad y 
+recuperación 
+considerando 6 de 7 de 
+los siguientes elementos: 
+1) Escenarios de prueba 
+simulados 
+2) Métricas de 
+recuperación 
+3) Descripción del entorno 
+de pruebas 
+4) Herramientas y 
+configuraciones utilizadas 
+5) Evidencias de 
+ejecución de pruebas de 
+Alta Disponibilidad 
+6) Evidencias de 
+ejecución de pruebas de 
+Recuperación 
+7) Estado final y 
+conclusiones 
+Evalúa la capacidad del 
+sistema para mantener 
+disponibilidad y tolerancia 
+a fallos mediante la 
+ejecución de escenarios 
+de alta disponibilidad y 
+recuperación 
+considerando 4 o 5 los 
+siguientes elementos: 
+1) Escenarios de prueba 
+simulados 
+2) Métricas de 
+recuperación 
+3) Descripción del entorno 
+de pruebas 
+4) Herramientas y 
+configuraciones utilizadas 
+5) Evidencias de 
+ejecución de pruebas de 
+Alta Disponibilidad 
+6) Evidencias de 
+ejecución de pruebas de 
+Recuperación 
+7) Estado final y 
+conclusiones 
+Evalúa la capacidad del 
+sistema para mantener 
+disponibilidad y tolerancia 
+a fallos mediante la 
+ejecución de escenarios 
+de alta disponibilidad y 
+recuperación 
+considerando al menos 3 
+de los siguientes 
+elementos: 
+1) Escenarios de prueba 
+simulados 
+2) Métricas de 
+recuperación 
+3) Descripción del entorno 
+de pruebas 
+4) Herramientas y 
+configuraciones utilizadas 
+5) Evidencias de 
+ejecución de pruebas de 
+Alta Disponibilidad 
+6) Evidencias de 
+ejecución de pruebas de 
+Recuperación 
+7) Estado final y 
+conclusiones 
+4 3 2 1 
+
+=== PÁGINA 8 ===
+Criterio  Definición del criterio Estándar esperado    En proceso 2  En proceso 1 Inicial 
+Validación del 
+monitoreo 
+Se espera que el 
+estudiante valide el 
+monitoreo del sistema 
+teniendo en cuenta 
+recursos de hardware 
+como memoria, CPU, 
+Disco y evidencias de 
+registro de eventos de 
+la aplicación en la 
+plataforma Cloud. 
+Valida de manera precisa 
+el monitoreo automático 
+del sistema teniendo en 
+cuenta recursos de 
+hardware como memoria, 
+CPU, Disco, red y 
+evidencias de registro de 
+eventos de la aplicación 
+en la plataforma Cloud. 
+Valida de manera 
+adecuada el monitoreo 
+automático del sistema 
+teniendo en cuenta 
+recursos de hardware 
+como memoria, CPU, 
+Disco y evidencias de 
+registro de eventos de la 
+aplicación en la 
+plataforma Cloud. 
+Valida el monitoreo del 
+sistema teniendo en 
+cuenta recursos de 
+hardware como memoria 
+o CPU o Disco y 
+evidencias de registro de 
+eventos de la aplicación 
+en la plataforma Cloud. 
+Valida el monitoreo del 
+sistema teniendo en 
+cuenta recursos de 
+hardware como memoria 
+o CPU o Disco y 
+evidencias de registro de 
+eventos de la aplicación. 
+2 1.5 1 0.5 
+Sustentación 
+Se califica que el 
+estudiante argumente 
+el proyecto con 
+claridad, coherencia 
+técnica y dominio 
+conceptual, 
+explicando las 
+decisiones tomadas 
+en cada fase del 
+desarrollo. 
+ 
+Argumenta el proyecto 
+con claridad, coherencia 
+técnica y dominio 
+conceptual, explicando 
+las decisiones tomadas 
+en cada fase del 
+desarrollo cumpliendo los 
+siguientes puntos:  
+1) Se expone los 
+principales aportes al 
+proyecto 
+2) Se sigue un 
+orden lógico, coherente y 
+con capacidad de 
+síntesis 
+3) Se demuestra 
+dominio del tema, 
+argumentando y 
+Argumenta el su 
+proyecto con claridad, 
+coherencia técnica y 
+dominio conceptual, 
+explicando las decisiones 
+tomadas en cada fase 
+del desarrollo 
+cumpliendo 3 de 4 de los 
+siguientes puntos:  
+1) Se expone los 
+principales aportes al 
+proyecto 
+2) Se sigue un 
+orden lógico, coherente y 
+con capacidad de 
+síntesis 
+3) Se demuestra 
+dominio del tema, 
+Argumenta el proyecto 
+con claridad, coherencia 
+técnica y dominio 
+conceptual, explicando 
+las decisiones tomadas 
+en cada fase del 
+desarrollo cumpliendo 2 
+de 4 de los siguientes 
+puntos:  
+1) Se expone los 
+principales aportes al 
+proyecto 
+2) Se sigue un 
+orden lógico, coherente y 
+con capacidad de 
+síntesis 
+3) Se demuestra 
+dominio del tema, 
+Argumenta el proyecto 
+con claridad, coherencia 
+técnica y dominio 
+conceptual, explicando 
+las decisiones tomadas 
+en cada fase del 
+desarrollo cumpliendo 1 
+de 4 de los siguientes 
+puntos:  
+1) Se expone los 
+principales aportes al 
+proyecto 
+2) Se sigue un 
+orden lógico, coherente y 
+con capacidad de 
+síntesis 
+3) Se demuestra 
+dominio del tema, 
+
+=== PÁGINA 9 ===
+ 
+Criterio  Definición del criterio Estándar esperado    En proceso 2  En proceso 1 Inicial 
+sustentando los 
+artefactos elaborados 
+4) Se muestra el 
+funcionamiento del 
+sistema con alta 
+disponibilidad 
+argumentando y 
+sustentando los 
+artefactos elaborados 
+4) Se muestra el 
+funcionamiento del 
+sistema con alta 
+disponibilidad 
+argumentando y 
+sustentando los 
+artefactos elaborados 
+4) Se muestra el 
+funcionamiento del 
+sistema con alta 
+disponibilidad 
+argumentando y 
+sustentando los 
+artefactos elaborados 
+4) Se muestra el 
+funcionamiento del 
+sistema con alta 
+disponibilidad 
+2 1.5 1 0.5 
+Levantamiento 
+de 
+Observaciones  
+Se califica que el 
+estudiante realice el 
+levantamiento de todas 
+las observaciones 
+realizadas en el 
+Avance de proyecto 
+Final 3. 
+Realiza el levantamiento 
+del 100% de todas las 
+observaciones 
+realizadas en el Avance 
+de proyecto Final 3. 
+Realiza el levantamiento 
+del 80% de todas las 
+observaciones 
+realizadas en el Avance 
+de proyecto Final 3. 
+Realiza el levantamiento 
+del 50% de todas las 
+observaciones 
+realizadas en el Avance 
+de proyecto Final 3. 
+Realiza el levantamiento 
+del 30% de todas las 
+observaciones 
+realizadas en el Avance 
+de proyecto Final 3. 
+4 3 2 1 
+ 
+ 
+
+=== PÁGINA 10 ===
+Anexo. Estructura del informe 
+ 
+1. Análisis Empresarial 
+a. Introducción 
+b. Descripción de la empresa 
+c. Visión 
+d. Misión 
+e. Análisis de Negocio (Lean Canvas) 
+f. Mapa de Procesos (AS-IS) 
+g. Oportunidades de mejora y modelo propuesto (TO-BE) 
+2. Planificación y Gestión del Proyecto 
+a. Project Charter 
+b. Alcance y objetivos del proyecto 
+c. Cronograma del proyecto (Diagrama de Gantt) 
+d. Planificación ágil – Sprint Planning 
+e. Roles y artefactos Scrum 
+f. Tablero Kanban/Scrum 
+g. Product Backlog 
+h. Historias de usuario 
+3. Selección y Configuración de Herramientas de desarrollo 
+a. Selección de herramientas 
+b. Evidencias de configuración de herramientas 
+c. Repositorio GitHub 
+i. Estructura del repositorio 
+ii. Archivo README.md 
+4. Prototipos 
+a. Wireframes de baja fidelidad 
+b. Mockups de alta fidelidad 
+c. Principios y buenas prácticas UX/UI aplicadas 
+d. Navegación y flujo de interacción del usuario 
+5. Gestión de riesgos del proyecto 
+a. Identificación de riesgos 
+b. Mapa de riesgos (Matriz de Probabilidad–Impacto + Heatmap) 
+c. Plan de gestión de riesgos 
+i. Estrategias de mitigación y respuesta 
+ii. Seguimiento y control de riesgos 
+
+=== PÁGINA 11 ===
+ 
+6. Definición de Métricas y Niveles de Servicio 
+a. Identificación de KPIs y métricas del sistema 
+b. Definición de SLA (Service Level Agreement) y SLO (Service Level Objective) 
+c. Plan de Medición y Monitoreo 
+i. Herramientas de monitoreo utilizadas 
+ii. Métricas recolectadas 
+7. Desarrollo e Implementación Técnica 
+a. Arquitectura general del sistema 
+b. Estructura del código fuente 
+c. Código optimizado y evidencia técnica 
+d. Estrategias WPO 
+i. Métricas antes y después de la optimización 
+ii. Estrategias implementadas 
+8. Implementación y Administración de Base de Datos 
+a. Diseño físico de base de datos 
+b. Informe de Administración y Replicación 
+i. Estrategia de respaldo y replicación 
+ii. Configuración de alta disponibilidad 
+iii. Evidencias de monitoreo y administración 
+c. Implementación del Patrón de Acceso a Datos 
+i. Patrón de Acceso a Datos elegido 
+ii. Diagrama de clases de muestra de uso del patrón 
+iii. Ejemplo de código implementado 
+9. Seguridad del Sistema 
+a. Catálogo de controles de seguridad 
+b. Módulo de Autenticación y Autorización implementado 
+c. Informe Técnico de Seguridad y Cifrado de Datos 
+d. Pruebas de seguridad web 
+i. Metodología empleada 
+ii. Resultados y vulnerabilidades detectadas 
+iii. Acciones correctivas y recomendaciones 
+10. Validación y Verificación del Sistema 
+a. Plan de pruebas del sistema 
+b. Evidencias de pruebas del sistema 
+ 
+ 
+
+=== PÁGINA 12 ===
+11. Despliegue 
+a. Manual de despliegue 
+b. Evidencia de pruebas de despliegue 
+12. Calidad Funcional y Pruebas Automatizadas 
+a. Evidencia de implementación de pruebas funcionales 
+i. Frameworks utilizados 
+ii. Listado de casos de prueba 
+b. Evidencia de ejecución 
+i. Capturas de ejecución 
+ii. Reportes de cobertura 
+c. Métricas, nivel de cumplimiento y observaciones 
+13. Interoperabilidad y Pruebas de Integración 
+a. Sistemas externos a integrar 
+b. Evidencia de implementación de pruebas de integración 
+i. Frameworks utilizados 
+ii. Lista de casos de prueba 
+c. Evidencia de ejecución 
+i. Capturas de ejecución 
+ii. Reportes de resultados 
+d. Métricas, nivel de cumplimiento y observaciones 
+14. Pruebas automatizadas de Usabilidad 
+a. Evidencia de implementación de pruebas de usabilidad 
+i. Frameworks utilizados 
+ii. Lista de casos de prueba 
+b. Evidencia de ejecución 
+i. Capturas de ejecución 
+ii. Reportes de ejecución 
+c. Métricas, nivel de cumplimiento y observaciones 
+15. Informe de Evaluación de Usabilidad según la ISO 25010 
+a. Criterios, métricas y evidencias empleadas 
+i. Facilidad de aprendizaje 
+ii. Protección contra errores del usuario 
+iii. Asistencia al usuario 
+iv. Compromiso/participación del usuario 
+b. Resultados  
+c. Conclusiones 
+
+=== PÁGINA 13 ===
+ 
+ 
+ 
+16. Informe de Evaluación de Rendimiento según la ISO 25010 
+a. Descripción del entorno de pruebas 
+b. Métricas evaluadas 
+c. Herramientas utilizadas 
+d. Resultados y comparación con umbrales/SLA 
+e. Gráficos y reportes de monitoreo 
+f. Conclusiones y acciones de mejora 
+17. Pruebas de Carga y Estrés 
+a. Escenarios de prueba 
+b. Herramientas utilizadas 
+c. Resultados y análisis comparativo 
+d. Identificación de cuellos de botella 
+e. Propuestas de mejora 
+18. Monitoreo de la Aplicación 
+a. Monitoreo de recursos 
+b. Herramientas utilizadas 
+c. Reportes y capturas de monitoreo 
+d. Perfilamiento de código 
+e. Observaciones y conclusiones 
+19. Pruebas de Mantenimiento 
+a. Escenario del cambio realizado 
+b. Casos de prueba ejecutados (antes y después) 
+c. Evidencias de ejecución 
+d. Impacto del cambio en el sistema 
+e. Estado final y conclusiones 
+20. Informe de Pruebas de Alta Disponibilidad y Recuperación ante desastres 
+a. Escenarios de prueba simulados 
+b. Métricas de recuperación 
+c. Descripción del entorno de pruebas 
+d. Herramientas y configuraciones utilizadas 
+e. Evidencias de ejecución de pruebas de Alta Disponibilidad 
+f. Evidencias de ejecución de pruebas de Recuperación 
+g. Estado final y conclusiones 
+  Conclusiones del proyecto 
+
+=== PÁGINA 14 ===
+  Recomendaciones del proyecto 
+  Anexos 
+• A. Script SQL y archivos de configuración de base de datos 
+• B. Fragmentos de código fuente relevantes 
+• C. Reportes automatizados de pruebas 
+• D. Reportes automatizados de seguridad 
+• E. Reportes automatizados de funcionalidad 
+• F. Reportes automatizados de integración 
+• G. Reportes automatizados de usabilidad 
+• H. Evidencia de historial de commits en el repositorio 
+  Referencias Bibliográficas 
+

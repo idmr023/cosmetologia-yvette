@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>08-daily-scrum</title>
+</head>
+<body>
+<h1>08 — Daily Scrum</h1>
+
+<h2>Formato asincrónico para equipo de 1 dev</h2>
+
+<p>Dado que el Development Team es una sola persona, el Daily Scrum se realiza de forma <strong>asincrónica y escrita</strong> en un documento compartido (Google Docs / Confluence page), visible para PO y SM.</p>
+
+<h3>Las 3 preguntas</h3>
+
+<p>Cada día hábil, el Dev responde por escrito antes de las 10:00 a.m.:</p>
+
+<p>1. <strong>¿Qué hice ayer que ayudó al equipo a cumplir el Sprint Goal?</strong><br>
+2. <strong>¿Qué haré hoy para ayudar al equipo a cumplir el Sprint Goal?</strong><br>
+3. <strong>¿Veo algún impedimento que me bloquee a mí o al equipo?</strong></p>
+
+<h3>Ejemplo de entrada (Sprint 11, Día 14)</h3>
+
+<pre><code>Fecha: 2026-10-14
+Dev: [Nombre]
+
+1. Ayer:
+   - Completé la migración de Playwright de Cypress (3 spec files convertidas)
+   - Corregí el timeout del webServer en playwright.config.ts
+   - CI green en PR #23 (typecheck + lint + build)
+
+2. Hoy:
+   - Convertir 2 spec files restantes (admin/analitica, admin/resenas)
+   - Testear mobile viewport en modo local
+
+3. Impedimentos:
+   - El webServer necesita que el backend esté en puerto 4000 — a veces
+     conflict con otro proceso local. Solución: script kill-port</code></pre>
+
+<h3>Registro histórico</h3>
+
+<p>Cada Sprint tiene su propio documento de Daily Scrums (linkeado desde el <a href="./07-sprint-backlog.md">Sprint Backlog</a> y desde el archivo de Sprint correspondiente en <code>sprints/</code>).</p>
+
+<h3>Adaptación justificada</h3>
+
+<p>La Guía SCRUM 2020 dice: <strong>"Los Developers pueden seleccionar la estructura y técnica que deseen, siempre que su Daily Scrum se centre en el progreso hacia el Sprint Goal y genere un plan accionable para el próximo día de trabajo."</strong></p>
+
+<p>El formato escrito cumple este propósito:</p>
+
+<ul>
+  <li><strong>Enfocado</strong>: las 3 preguntas mantienen el foco en el Sprint Goal</li>
+  <li><strong>Plan accionable</strong>: las tareas del día son concretas y verificables</li>
+  <li><strong>Transparencia</strong>: el SM y PO tienen visibilidad sin depender de una reunión sincrónica</li>
+  <li><strong>Artefacto histórico</strong>: queda registro para retrospectivas</li>
+</ul>
+</body>
+</html>

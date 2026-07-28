@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CheckCircle2, Download, Home, Loader2, CalendarPlus, MessageCircle } from "lucide-react";
+import { CheckCircle2, Download, Home, Loader2, CalendarPlus } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { formatCurrency, formatDate, formatTime } from "@/lib/utils";
-import { waLink, bookingMessage } from "@/lib/whatsapp";
 
 export interface ReceiptData {
   appointmentId: string;
@@ -181,24 +180,6 @@ export function Receipt({ data, onBack }: ReceiptProps) {
             </Button>
           )}
         </div>
-
-        <a
-          href={waLink(data.clientPhone, bookingMessage({
-            clientName: data.clientName,
-            serviceName: data.serviceName,
-            colaboradorName: data.colaboradorName,
-            date: formatDate(data.startAt),
-            time: formatTime(data.startAt),
-            modality: data.modality === "salon" ? "En salón" : "A domicilio",
-            total: formatCurrency(data.totalPrice),
-          }))}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex min-h-touch items-center justify-center gap-2 rounded-xl border border-neutral-300 px-5 text-base font-medium text-ink transition-colors hover:border-green-500 hover:text-green-600"
-        >
-          <MessageCircle className="h-5 w-5" />
-          Compartir por WhatsApp
-        </a>
 
         <a
           href={googleCalendarUrl}

@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { LogOut, UserCircle } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { LogOut, UserCircle, Globe } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
 
 interface TopBarProps {
@@ -11,6 +11,10 @@ interface TopBarProps {
 }
 
 export function TopBar({ title, userName }: TopBarProps) {
+  const { data: session } = useSession();
+  const role = session?.user?.role ?? "cliente";
+  const perfilHref = role === "admin" ? "/admin/perfil" : role === "colaborador" ? "/colaborador/perfil" : "/cliente/perfil";
+
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-neutral-200 bg-white/95 px-4 backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-950/95">
       <div>
@@ -21,7 +25,14 @@ export function TopBar({ title, userName }: TopBarProps) {
       </div>
       <div className="flex items-center gap-1">
         <Link
-          href="/admin/perfil"
+          href="/"
+          aria-label="Sitio web"
+          className="flex min-h-touch min-w-touch items-center justify-center rounded-lg text-neutral-400 hover:text-ink dark:hover:text-white"
+        >
+          <Globe className="h-5 w-5" />
+        </Link>
+        <Link
+          href={perfilHref}
           aria-label="Perfil"
           className="flex min-h-touch min-w-touch items-center justify-center rounded-lg text-neutral-400 hover:text-ink dark:hover:text-white"
         >
@@ -29,7 +40,7 @@ export function TopBar({ title, userName }: TopBarProps) {
         </Link>
         <DarkModeToggle />
         <button
-          onClick={() => signOut({ callbackUrl: "/login" })}
+          onClick={() => signOut({ callbackUrl: "/" })}
           aria-label="Cerrar sesión"
           className="flex min-h-touch min-w-touch items-center justify-center rounded-lg text-neutral-400 hover:text-ink dark:hover:text-white"
         >

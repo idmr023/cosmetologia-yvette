@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sprint-08</title>
+</head>
+<body>
+<h1>Sprint 08 — Fidelización + Reseñas</h1>
+
+<p><strong>Release</strong>: v0.3.0 | <strong>Período</strong>: Semana 29–32 (Año 2) | <strong>Cadencia</strong>: 4 semanas</p>
+
+<h2>Sprint Goal</h2>
+
+<blockquote><p>Implementar programa de lealtad y permitir reseñas post-cita</p></blockquote>
+
+<h2>Backlog</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>User Story</th>
+      <th>Pts</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>US-023</td>
+      <td>Acumular puntos por cada cita</td>
+      <td>8</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>US-024</td>
+      <td>Subir de nivel (Bronce/Plata/Oro)</td>
+      <td>5</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>US-025</td>
+      <td>Admin gestiona recompensas y niveles</td>
+      <td>5</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>US-026</td>
+      <td>Cliente deja reseña post-cita</td>
+      <td>5</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>US-027</td>
+      <td>Admin modera reseñas</td>
+      <td>3</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>US-028</td>
+      <td>Código de referido para descuento</td>
+      <td>5</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>TSK-010</td>
+      <td>7 nuevas tablas + migración (loyalty, reviews, referrals)</td>
+      <td>5</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td><strong>Total</strong></td>
+      <td></td>
+      <td><strong>36</strong></td>
+      <td><strong>✅</strong> (capacity: 32, completed: 32)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Daily highlights</h2>
+
+<ul>
+  <li>D1–D5: Schema: 7 tablas (loyalty_tiers, loyalty_points, loyalty_transactions, loyalty_rewards, client_rewards, reviews, referral_codes, referral_usage)</li>
+  <li>D6–D10: Endpoints de fidelización: puntos, niveles, recompensas, canje</li>
+  <li>D11–D14: LoyaltyCard widget (nivel, progreso, actividad, canje)</li>
+  <li>D15–D18: Reviews: rating 1-5, formulario post-cita, moderación admin, sección landing</li>
+  <li>D19–D20: Referidos: código único, descuento 10%, tracking de uso</li>
+</ul>
+
+<h2>Sprint Review outcome</h2>
+
+<blockquote><p>✅ <strong>Aceptado</strong>: Elizabeth vio su nivel Oro con 520 puntos. "Ahora pregunto si quiere canjear su descuento."</p></blockquote>
+
+<h2>Retrospective actions</h2>
+
+<ul>
+  <li><strong>Start</strong>: Separar seed de datos de prueba vs producción</li>
+  <li>Crear <code>scripts/seed-e2e.ts</code></li>
+</ul>
+</body>
+</html>

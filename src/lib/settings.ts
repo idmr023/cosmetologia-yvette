@@ -1,3 +1,4 @@
+
 import { db, schema } from "@/lib/db";
 
 export async function getSetting(key: string): Promise<string | null> {

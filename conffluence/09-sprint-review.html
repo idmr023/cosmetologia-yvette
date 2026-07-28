@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>09-sprint-review</title>
+</head>
+<body>
+<h1>09 — Sprint Review</h1>
+
+<h2>Formato de la ceremonia</h2>
+
+<p>La Sprint Review se realiza <strong>cada 4 semanas</strong>, al final del Sprint. Duración: <strong>45 minutos</strong>.</p>
+
+<h3>Participantes</h3>
+
+<ul>
+  <li><strong>PO</strong> (desarrollador) — presenta resultados, acepta/rechaza</li>
+  <li><strong>SM</strong> (mentora externa) — facilita la sesión, registra feedback</li>
+  <li><strong>Stakeholders invitados</strong> — Yvette (dueña), Elizabeth/Lourdes (colaboradoras) según disponibilidad y pertinencia</li>
+</ul>
+
+<h3>Agenda</h3>
+
+<p>1. <strong>Check-in</strong> (5 min): recordatorio del Sprint Goal<br>
+2. <strong>Demo en vivo</strong> (25 min):</p>
+
+<ul>
+  <li>   - El Dev muestra el incremento funcionando en entorno real (localhost + Neon)</li>
+  <li>   - Se recorren las historias del Sprint Backlog una por una</li>
+  <li>   - Los stakeholders interactúan con la funcionalidad (si aplica)</li>
+</ul>
+
+<p>3. <strong>Feedback</strong> (10 min): PO y stakeholders expresan observaciones<br>
+4. <strong>Actualización del Product Backlog</strong> (5 min): se registran nuevos insights como historias o ajustes</p>
+
+<h3>Criterios de aceptación</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Criterio</th>
+      <th>Quién decide</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>¿La funcionalidad es usable desde mobile?</td>
+      <td>PO + stakeholders</td>
+    </tr>
+    <tr>
+      <td>¿Resuelve el problema de negocio planteado en la User Story?</td>
+      <td>PO</td>
+    </tr>
+    <tr>
+      <td>¿La UX es intuitiva sin entrenamiento previo?</td>
+      <td>Stakeholders</td>
+    </tr>
+    <tr>
+      <td>¿El código pasa el DoD?</td>
+      <td>Dev (verificado durante el Sprint)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Historia de aceptación — ejemplos</h3>
+
+<p><strong>Sprint 02 — Aceptado</strong>: Booking público</p>
+
+<blockquote><p>Yvette probó la reserva: "Pude agendar un corte con Elizabeth sin registrar. Solo puse mi nombre y teléfono. Esto ahorra las llamadas de ida y vuelta." — <strong>Aceptado</strong> ✅</p></blockquote>
+
+<p><strong>Sprint 05 — Rechazado parcialmente</strong>: Caja chica</p>
+
+<blockquote><p>"En el celular se ve bien pero los botones son muy pequeños, casi toco el equivocado." — <strong>Rechazado</strong>, touch targets < 44px. Pasó al Sprint 06 con corrección. ✅ resuelto.</p></blockquote>
+
+<p><strong>Sprint 08 — Aceptado</strong>: Fidelización</p>
+
+<blockquote><p>Elizabeth vio su nivel: "Soy Oro con 520 puntos. Ahora en la recepción pregunto si quiere canjear su descuento." — <strong>Aceptado</strong> ✅</p></blockquote>
+
+<h3>Sprint Goal alcanzado — registro por Sprint</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Sprint</th>
+      <th>Goal alcanzado</th>
+      <th>Feedback clave</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>01</td>
+      <td>✅</td>
+      <td>"La landing se ve profesional, me gusta el dorado" — Yvette</td>
+    </tr>
+    <tr>
+      <td>02</td>
+      <td>✅</td>
+      <td>"Reservar sin login es justo lo que necesito" — Yvette</td>
+    </tr>
+    <tr>
+      <td>03</td>
+      <td>✅</td>
+      <td>Panel colaborador listo para Elizabeth y Lourdes</td>
+    </tr>
+    <tr>
+      <td>04</td>
+      <td>✅ (con deuda)</td>
+      <td>Backend migrado, 1 test falla — pasa a Sprint 05</td>
+    </tr>
+    <tr>
+      <td>05</td>
+      <td>✅</td>
+      <td>Caja funciona en mobile después de fix touch targets</td>
+    </tr>
+    <tr>
+      <td>06</td>
+      <td>✅</td>
+      <td>MFA configurado para admin</td>
+    </tr>
+    <tr>
+      <td>07</td>
+      <td>⚠️ Parcial</td>
+      <td>Slots picker OK, notificaciones WhatsApp pendientes de API key</td>
+    </tr>
+    <tr>
+      <td>08</td>
+      <td>✅</td>
+      <td>Fidelización completa con 3 niveles, referidos OK</td>
+    </tr>
+    <tr>
+      <td>09</td>
+      <td>✅ (con deuda)</td>
+      <td>E-commerce sin pasarela real (solo registro de pago)</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>✅</td>
+      <td>E2E cubren flujos críticos, CI verde</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>✅</td>
+      <td>Docs completas, Sentry integrado</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>✅</td>
+      <td>Cierre, cero defectos abiertos</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

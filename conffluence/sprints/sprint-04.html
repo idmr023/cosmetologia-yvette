@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sprint-04</title>
+</head>
+<body>
+<h1>Sprint 04 — Refactor Backend Express</h1>
+
+<p><strong>Release</strong>: v0.2.0 | <strong>Período</strong>: Semana 13–16 (Año 1) | <strong>Cadencia</strong>: 4 semanas</p>
+
+<h2>Sprint Goal</h2>
+
+<blockquote><p>Separar el backend en un servicio Express independiente sin romper funcionalidad existente</p></blockquote>
+
+<h2>Backlog</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>User Story</th>
+      <th>Pts</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>US-019</td>
+      <td>Separar backend a Express, API independiente</td>
+      <td>13</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>US-020</td>
+      <td>Repository Pattern (DAO) — 7 repositorios</td>
+      <td>8</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>TSK-002</td>
+      <td>Documentar contratos de API en docs/API.md</td>
+      <td>3</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td><strong>Total</strong></td>
+      <td></td>
+      <td><strong>24</strong></td>
+      <td><strong>✅</strong> (capacity: 25, completado: 24)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Daily highlights</h2>
+
+<ul>
+  <li>D1–D8: Migrar todas las API routes de Next.js a Express (10 módulos)</li>
+  <li>D9–D12: Crear 7 repositories (appointment, client, collaborator, commission, inventory, cashRegister, service)</li>
+  <li>D13–D16: Configurar proxy de Next.js (<code>next.config.mjs</code> rewrites → localhost:4000)</li>
+  <li>D17–D20: Probar equivalencia funcional. 1 test falla → pasa a Sprint 05</li>
+</ul>
+
+<h2>Sprint Review outcome</h2>
+
+<blockquote><p>✅ <strong>Aceptado con deuda</strong>: Backend migrado, 1 test falla — pasa a Sprint 05</p></blockquote>
+
+<h2>Retrospective actions</h2>
+
+<ul>
+  <li><strong>Start</strong>: Pruebas manuales post-refactor con Postman</li>
+  <li>Make <code>npm run dev:all</code> para lanzar ambos servidores</li>
+</ul>
+</body>
+</html>

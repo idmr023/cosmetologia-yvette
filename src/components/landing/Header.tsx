@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
 import { Menu, X, Scissors } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -9,11 +10,19 @@ const NAV_LINKS = [
   { href: "#servicios", label: "Servicios" },
   { href: "#galeria", label: "Galería" },
   { href: "#nosotros", label: "Nosotros" },
+  { href: "/tienda", label: "Tienda" },
   { href: "#contacto", label: "Contacto" },
 ];
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const { data: session, status } = useSession();
+  const roleHome: Record<string, string> = {
+    admin: "/admin/inicio",
+    colaborador: "/colaborador/mis-citas",
+    cliente: "/cliente/inicio",
+  };
+  const home = session?.user?.role ? roleHome[session.user.role] : "/login";
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-neutral-200/60 bg-white/90 backdrop-blur-md">
@@ -40,12 +49,29 @@ export function Header() {
               {link.label}
             </a>
           ))}
-          <Link
-            href="/login"
-            className="min-h-touch rounded-full border border-ink px-5 py-2 text-sm font-medium text-ink transition-colors hover:bg-ink hover:text-white"
-          >
-            Ingresar
-          </Link>
+          {status === "authenticated" ? (
+            <>
+              <Link
+                href={home}
+                className="min-h-touch rounded-full border border-ink px-5 py-2 text-sm font-medium text-ink transition-colors hover:bg-ink hover:text-white"
+              >
+                Mi cuenta
+              </Link>
+              <button
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="min-h-touch rounded-full px-3 text-sm font-medium text-neutral-500 transition-colors hover:text-ink"
+              >
+                Salir
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              className="min-h-touch rounded-full border border-ink px-5 py-2 text-sm font-medium text-ink transition-colors hover:bg-ink hover:text-white"
+            >
+              Ingresar
+            </Link>
+          )}
         </div>
 
         <button
@@ -76,6 +102,26 @@ export function Header() {
               {link.label}
             </a>
           ))}
+          {status === "authenticated" ? (
+          <>
+            <Link
+              href={home}
+              onClick={() => setOpen(false)}
+              className="mt-2 flex min-h-touch items-center justify-center rounded-full bg-ink px-5 text-base font-medium text-white"
+            >
+              Mi cuenta
+            </Link>
+            <button
+              onClick={() => {
+                setOpen(false);
+                signOut({ callbackUrl: "/" });
+              }}
+              className="mt-2 flex min-h-touch items-center justify-center rounded-full border border-neutral-300 px-5 text-base font-medium text-neutral-600"
+            >
+              Cerrar sesión
+            </button>
+          </>
+        ) : (
           <Link
             href="/login"
             onClick={() => setOpen(false)}
@@ -83,6 +129,7 @@ export function Header() {
           >
             Ingresar
           </Link>
+        )}
         </div>
       </div>
     </header>

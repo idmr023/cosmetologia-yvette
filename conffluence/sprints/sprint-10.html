@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sprint-10</title>
+</head>
+<body>
+<h1>Sprint 10 — Playwright E2E + CI/CD</h1>
+
+<p><strong>Release</strong>: v0.4.0 | <strong>Período</strong>: Semana 37–40 (Año 2) | <strong>Cadencia</strong>: 4 semanas</p>
+
+<h2>Sprint Goal</h2>
+
+<blockquote><p>Automatizar la validación de calidad con E2E tests y CI</p></blockquote>
+
+<h2>Backlog</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>User Story</th>
+      <th>Pts</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>US-034</td>
+      <td>E2E tests con Playwright para flujos críticos</td>
+      <td>13</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>US-037</td>
+      <td>PWA con service worker + offline parcial</td>
+      <td>8</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>TSK-012</td>
+      <td>CI GitHub Actions (typecheck + lint + build + E2E)</td>
+      <td>5</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td><strong>Total</strong></td>
+      <td></td>
+      <td><strong>26</strong></td>
+      <td><strong>✅</strong> (capacity: 22, completed: 22)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Daily highlights</h2>
+
+<ul>
+  <li>D1–D8: Migrar de Cypress a Playwright (16 spec files)</li>
+  <li>D9–D12: Global setup de auth, bypass Turnstile con test keys</li>
+  <li>D13–D16: CI con 3 jobs (frontend, backend, E2E), 4 workers, ~8 min</li>
+  <li>D17–D20: PWA: service worker, RegisterSW, cache API con idb-keyval (TTL 5 min), sync queue offline</li>
+</ul>
+
+<h2>Sprint Review outcome</h2>
+
+<blockquote><p>✅ <strong>Aceptado</strong>: CI verde en 8 min. E2E cubren flujos públicos + admin + colaborador</p></blockquote>
+
+<h2>Retrospective actions</h2>
+
+<ul>
+  <li><strong>Start</strong>: Usar <code>globalSetup</code> para auth E2E</li>
+  <li><strong>Stop</strong>: Escribir tests sin seed de datos dedicado</li>
+</ul>
+</body>
+</html>

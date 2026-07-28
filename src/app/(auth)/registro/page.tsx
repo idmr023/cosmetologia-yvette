@@ -13,6 +13,7 @@ import { validatePassword } from "@/lib/security/passwordPolicy";
 export default function RegistroPage() {
   const router = useRouter();
   const [name, setName] = useState("");
+  const [dni, setDni] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -32,6 +33,11 @@ export default function RegistroPage() {
 
     if (password !== confirmPassword) {
       setError("Las contraseñas no coinciden");
+      return;
+    }
+
+    if (!/^\d{8}$/.test(dni)) {
+      setError("Ingresa un DNI válido de 8 dígitos");
       return;
     }
 
@@ -59,6 +65,7 @@ export default function RegistroPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
+          dni,
           email,
           phone,
           password,
@@ -116,6 +123,18 @@ export default function RegistroPage() {
           onChange={(e) => setName(e.target.value)}
           required
           autoComplete="name"
+        />
+        <Input
+          id="dni"
+          label="DNI"
+          type="text"
+          inputMode="numeric"
+          maxLength={8}
+          placeholder="12345678"
+          value={dni}
+          onChange={(e) => setDni(e.target.value.replace(/\D/g, ""))}
+          required
+          autoComplete="off"
         />
         <Input
           id="email"

@@ -3,6 +3,7 @@ import { z } from "zod";
 export const clientSchema = z.object({
   firstName: z.string().min(2, "Nombre debe tener al menos 2 caracteres"),
   lastName: z.string().min(2, "Apellido debe tener al menos 2 caracteres"),
+  dni: z.string().regex(/^\d{8}$/, "DNI debe tener 8 dígitos"),
   phone: z.string().min(6, "Teléfono inválido"),
   email: z.string().email("Email inválido").optional().or(z.literal("")),
   notes: z.string().optional(),
@@ -38,7 +39,7 @@ export const colaboradorSchema = z.object({
 
 export const appointmentSchema = z.object({
   clientId: z.string().uuid("Cliente inválido"),
-  serviceId: z.string().uuid("Servicio inválido"),
+  serviceIds: z.array(z.string().uuid()).min(1, "Selecciona al menos un servicio"),
   colaboradorId: z.string().uuid("Colaboradora inválida"),
   startAt: z.string().min(1, "Fecha y hora requerida"),
   notes: z.string().optional(),
@@ -50,6 +51,7 @@ export const bookingSchema = z.object({
   startAt: z.string(),
   modality: z.enum(["salon", "domicilio"]),
   clientName: z.string().min(2),
+  clientDni: z.string().regex(/^\d{8}$/),
   clientPhone: z.string().min(6),
   clientEmail: z.string().email().optional().or(z.literal("")),
   notes: z.string().optional(),

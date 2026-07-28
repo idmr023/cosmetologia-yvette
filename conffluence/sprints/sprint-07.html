@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sprint-07</title>
+</head>
+<body>
+<h1>Sprint 07 — Auto-agendamiento + Notificaciones</h1>
+
+<p><strong>Release</strong>: v0.3.0 | <strong>Período</strong>: Semana 25–28 (Año 2) | <strong>Cadencia</strong>: 4 semanas</p>
+
+<h2>Sprint Goal</h2>
+
+<blockquote><p>Permitir que los clientes se agenden sin intervención del staff</p></blockquote>
+
+<h2>Backlog</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>User Story</th>
+      <th>Pts</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>US-010</td>
+      <td>Slots disponibles en tiempo real (no horarios ocupados)</td>
+      <td>8</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>US-011</td>
+      <td>Confirmación por WhatsApp</td>
+      <td>5</td>
+      <td>⚠️ Parcial</td>
+    </tr>
+    <tr>
+      <td>US-012</td>
+      <td>Boleta única B{YYYYMMDD}-{ID} por cita</td>
+      <td>3</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>TSK-008</td>
+      <td>Notificaciones multicanal (ultramsg, recordatorios 24h, alertas stock bajo)</td>
+      <td>8</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>TSK-009</td>
+      <td>Algoritmo de time slot picker (2 semanas vista, duración de servicio)</td>
+      <td>6</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td><strong>Total</strong></td>
+      <td></td>
+      <td><strong>30</strong></td>
+      <td><strong>✅</strong> (commit: 32, complete: 30)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Daily highlights</h2>
+
+<ul>
+  <li>D1–D8: Algoritmo de slots disponibles en backend. Endpoint <code>GET /api/appointments/available-slots</code></li>
+  <li>D9–D12: Frontend time slot picker con calendario de 2 semanas</li>
+  <li>D13–D16: Servicio de notificaciones (ultramsg): confirmación, recordatorio 24h, post-cita</li>
+  <li>D17–D20: <strong>Impedimento</strong>: API key de ultramsg no estaba lista → mock en desarrollo</li>
+</ul>
+
+<h2>Sprint Review outcome</h2>
+
+<blockquote><p>⚠️ <strong>Aceptado parcial</strong>: Slots picker OK. Notificaciones WhatsApp pendientes de API key real</p></blockquote>
+
+<h2>Retrospective actions</h2>
+
+<ul>
+  <li><strong>Start</strong>: Tener API keys listas antes del Sprint</li>
+  <li><strong>Start</strong>: Mock de servicios externos en desarrollo</li>
+</ul>
+</body>
+</html>

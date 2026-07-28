@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10-sprint-retrospective</title>
+</head>
+<body>
+<h1>10 — Sprint Retrospective</h1>
+
+<h2>Formato</h2>
+
+<p>Cada Sprint finaliza con una retrospectiva de 30 minutos. Formato <strong>Start / Stop / Continue</strong>:</p>
+
+<ul>
+  <li><strong>Start</strong>: prácticas que el equipo debería comenzar a hacer</li>
+  <li><strong>Stop</strong>: prácticas que el equipo debería dejar de hacer</li>
+  <li><strong>Continue</strong>: prácticas que funcionan y deben mantenerse</li>
+</ul>
+
+<h2>Retrospectivas por Sprint</h2>
+
+<h3>Sprint 01 — "Primeros pasos"</h3>
+
+<blockquote><p>"Configurar Drizzle + Neon me tomó más de lo esperado."</p></blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>Start</th>
+      <th>Stop</th>
+      <th>Continue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Documentar setup de BD desde el inicio</td>
+      <td>Postergar la configuración de CI</td>
+      <td>Commits tempranos y frecuentes</td>
+    </tr>
+    <tr>
+      <td>Usar <code>.env.example</code> con defaults</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Actions</strong>:</p>
+
+<ul>
+  <li>Crear <code>scripts/setup.sh</code> con comandos de inicialización</li>
+  <li>Configurar CI en GitHub Actions desde el Sprint 02</li>
+</ul>
+
+<h3>Sprint 02 — "La BD legacy"</h3>
+
+<blockquote><p>"Descubrimos que la BD tenía tablas Laravel de un proyecto anterior."</p></blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>Start</th>
+      <th>Stop</th>
+      <th>Continue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Verificar estado de la BD antes del Sprint Planning</td>
+      <td>Asumir que la BD está limpia</td>
+      <td>Hacer la migración manual con script tsx</td>
+    </tr>
+    <tr>
+      <td>Script de <code>db:check</code> que liste tablas y columnas</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Actions</strong>:</p>
+
+<ul>
+  <li><code>drizzle-kit push</code> no funciona con tablas legacy → script de migración manual</li>
+  <li>Agregar <code>verify-db.ts</code> para diagnóstico rápido</li>
+</ul>
+
+<h3>Sprint 03 — "Hydration y webpack"</h3>
+
+<blockquote><p>"Las páginas admin mostraban hydration mismatch. Era la cache de Next.js."</p></blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>Start</th>
+      <th>Stop</th>
+      <th>Continue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Limpiar <code>.next/</code> en CI antes del build</td>
+      <td>Ignorar warnings de consola en desarrollo</td>
+      <td>Desarrollar mobile-first (funciona en desktop sin ajustes)</td>
+    </tr>
+    <tr>
+      <td>Agregar <code>clean: true</code> en next.config.mjs</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Actions</strong>:</p>
+
+<ul>
+  <li>Configurar Next.js para limpiar cache en cada build</li>
+</ul>
+
+<h3>Sprint 04 — "Refactor sin romper"</h3>
+
+<blockquote><p>"Separar el backend de Next.js fue riesgoso. Los rewrites de dev ayudaron."</p></blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>Start</th>
+      <th>Stop</th>
+      <th>Continue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pruebas manuales post-refactor con Postman</td>
+      <td>Hacer refactors grandes sin PR intermedio</td>
+      <td>Usar repository pattern desde el inicio</td>
+    </tr>
+    <tr>
+      <td>Documentar contratos de API en docs/API.md</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Actions</strong>:</p>
+
+<ul>
+  <li>Documentar todos los endpoints REST antes del Sprint 05</li>
+</ul>
+
+<h3>Sprint 05 — "Touch targets"</h3>
+
+<blockquote><p>"Yvette dijo: 'los botones son muy pequeños'. Touch targets mínimos de 44px."</p></blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>Start</th>
+      <th>Stop</th>
+      <th>Continue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Probar en dispositivo físico antes del Review</td>
+      <td>Asumir que emulador mobile = real</td>
+      <td>El feedback directo de la dueña mejora el producto</td>
+    </tr>
+    <tr>
+      <td>Usar <code>min-h-touch</code> (44px) como clase utilitaria</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Actions</strong>:</p>
+
+<ul>
+  <li>Crear clase <code>min-h-touch: 44px</code> en Tailwind config</li>
+</ul>
+
+<h3>Sprint 06 — "Shadow DOM y JWT"</h3>
+
+<blockquote><p>"La migración de bcrypt a argon2 rompió el login de NextAuth. El fallback solo usaba bcrypt."</p></blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>Start</th>
+      <th>Stop</th>
+      <th>Continue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Verificar compatibilidad de hash antes de migrar</td>
+      <td>Migrar hashes en producción sin rollback</td>
+      <td>tryMigrateToArgon2 en login exitoso (no en lote)</td>
+    </tr>
+    <tr>
+      <td>Agregar test de autenticación en E2E</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Actions</strong>:</p>
+
+<ul>
+  <li>Sincronizar <code>verifyPassword</code> entre backend y NextAuth fallback</li>
+  <li>Agregar E2E test de login</li>
+</ul>
+
+<h3>Sprint 07 — "Slots y notificaciones"</h3>
+
+<blockquote><p>"El time slot picker fue más complejo de lo estimado. Las notificaciones dependen de API externa."</p></blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>Start</th>
+      <th>Stop</th>
+      <th>Continue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Tener API keys listas antes del Sprint</td>
+      <td>Depender de servicios externos sin plan B</td>
+      <td>El slot picker en tiempo real funciona con Drizzle</td>
+    </tr>
+    <tr>
+      <td>Mock de servicios externos en desarrollo</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Actions</strong>:</p>
+
+<ul>
+  <li>Crear mock de ultramsg para desarrollo</li>
+  <li>Algoritmo de slots: validar con datos reales de Yvette</li>
+</ul>
+
+<h3>Sprint 08 — "Fidelización end-to-end"</h3>
+
+<blockquote><p>"El programa de fidelización abarcó 7 tablas nuevas. La migración fue limpia."</p></blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>Start</th>
+      <th>Stop</th>
+      <th>Continue</th>
+    </tr>
+  </thead>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th>Separar seed de datos de prueba vs producción</th>
+      <th>Mezclar seed de desarrollo con seed de producción</th>
+      <th>Seed idempotente con <code>onConflictDoNothing()</code></th>
+    </tr>
+  </thead>
+</table>
+
+<p><strong>Actions</strong>:</p>
+
+<ul>
+  <li>Crear <code>scripts/seed-e2e.ts</code> para datos de prueba E2E</li>
+</ul>
+
+<h3>Sprint 09 — "E-commerce contra el tiempo"</h3>
+
+<blockquote><p>"El checkout multi-step se hizo en los últimos días. Quedó bien pero sin pasarela real."</p></blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>Start</th>
+      <th>Stop</th>
+      <th>Continue</th>
+    </tr>
+  </thead>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th>Priorizar features core sobre integraciones externas</th>
+      <th>Subestimar el tiempo de integración de pagos</th>
+      <th>División en pasos (datos → entrega → pago → resumen)</th>
+    </tr>
+  </thead>
+</table>
+
+<p><strong>Actions</strong>:</p>
+
+<ul>
+  <li>Queda pendiente integración con Mercado Pago para producción real</li>
+  <li>El registro de pago manual (Yape/Plin/Efectivo) es suficiente para MVP</li>
+</ul>
+
+<h3>Sprint 10 — "Playwright verde"</h3>
+
+<blockquote><p>"Migrar 16 specs de Cypress a Playwright tomó un Sprint completo."</p></blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>Start</th>
+      <th>Stop</th>
+      <th>Continue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Usar <code>globalSetup</code> para auth E2E</td>
+      <td>Escribir tests sin seed de datos dedicado</td>
+      <td>E2E cubren flujos críticos completos</td>
+    </tr>
+    <tr>
+      <td>Paralelizar E2E en CI</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Actions</strong>:</p>
+
+<ul>
+  <li>CI pasa en 8 min con 4 workers</li>
+  <li>Turnstile bypass con test keys</li>
+</ul>
+
+<h3>Sprint 11 — "Documentar o morir"</h3>
+
+<blockquote><p>"8 secciones de documentación técnica. Sentry + metrics integrados."</p></blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>Start</th>
+      <th>Stop</th>
+      <th>Continue</th>
+    </tr>
+  </thead>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th>Escribir documentación junto con el código</th>
+      <th>Dejar docs para el final</th>
+      <th>ADRs (Architecture Decision Records)</th>
+    </tr>
+  </thead>
+</table>
+
+<p><strong>Actions</strong>:</p>
+
+<ul>
+  <li>Docs cubren arquitectura, API, BD, seguridad, performance, monitoreo, HA, testing</li>
+</ul>
+
+<h3>Sprint 12 — "Cierre"</h3>
+
+<blockquote><p>"Último Sprint. Cero defectos abiertos. 248 de 249 pts completados."</p></blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>Start</th>
+      <th>Stop</th>
+      <th>Continue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Planificar mantenimiento post-entrega</td>
+      <td>Agregar features nuevas en el último Sprint</td>
+      <td>El proceso SCRUM adaptado funcionó para 1 dev</td>
+    </tr>
+    <tr>
+      <td>Preparar demo final con stakeholders</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Actions</strong>:</p>
+
+<ul>
+  <li>Release v0.4.0 preparada</li>
+  <li>Pendiente: deploy a producción (Railway / Vercel)</li>
+</ul>
+
+<h2>Resumen de acciones implementadas</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Acción</th>
+      <th>Sprint origen</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Script de migración manual (SQL directo)</td>
+      <td>02</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><code>verify-db.ts</code> para diagnóstico</td>
+      <td>02</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><code>clean: true</code> en Next.js config</td>
+      <td>03</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Documentación de API REST</td>
+      <td>04</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td><code>min-h-touch</code> 44px en Tailwind</td>
+      <td>05</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td><code>tryMigrateToArgon2</code> en login exitoso</td>
+      <td>06</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Mock de ultramsg en desarrollo</td>
+      <td>07</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td><code>scripts/seed-e2e.ts</code> separado</td>
+      <td>08</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>Global setup de auth en Playwright</td>
+      <td>10</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>ADRs en codebase-memory-mcp</td>
+      <td>11</td>
+      <td>✅</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

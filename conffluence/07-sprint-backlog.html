@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>07-sprint-backlog</title>
+</head>
+<body>
+<h1>07 — Sprint Backlog</h1>
+
+<h2>Estado actual: Sprint 12 (Sprint final)</h2>
+
+<p><strong>Período</strong>: Semana 45–48 (Año 2)<br>
+<strong>Sprint Goal</strong>: "Cerrar deuda técnica y preparar el producto para entrega final"<br>
+<strong>Capacity</strong>: 22 pts<br>
+<strong>Velocity esperada</strong>: 22 pts (70% focus factor × 20 días × 1 dev)</p>
+
+<h3>Sprint Backlog — Sprint 12</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>User Story</th>
+      <th>Pts</th>
+      <th>Estado</th>
+      <th>DoD</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>TSK-001</td>
+      <td>Bug: resolver hydration warnings en panel admin</td>
+      <td>3</td>
+      <td>✅ Done</td>
+      <td>Sin warnings en consola</td>
+    </tr>
+    <tr>
+      <td>TSK-002</td>
+      <td>Performance: lazy loading en landing images</td>
+      <td>2</td>
+      <td>✅ Done</td>
+      <td>Lighthouse > 90 en LCP</td>
+    </tr>
+    <tr>
+      <td>TSK-003</td>
+      <td>Bug: login falla si BD tiene hashes legacy</td>
+      <td>5</td>
+      <td>✅ Done</td>
+      <td>Argon2 y bcrypt coexisten</td>
+    </tr>
+    <tr>
+      <td>TSK-004</td>
+      <td>Chore: limpiar tabla <code>login_attempts</code> en setup e2e</td>
+      <td>2</td>
+      <td>✅ Done</td>
+      <td>Tests pasan sin lockout</td>
+    </tr>
+    <tr>
+      <td>TSK-005</td>
+      <td>Chore: unificar .env entre frontend y backend</td>
+      <td>2</td>
+      <td>✅ Done</td>
+      <td>Misma DATABASE_URL</td>
+    </tr>
+    <tr>
+      <td>TSK-006</td>
+      <td>Feature: implementar circuit breaker en backend</td>
+      <td>5</td>
+      <td>✅ Done</td>
+      <td>opossum wrapper probado</td>
+    </tr>
+    <tr>
+      <td>TSK-007</td>
+      <td>Docs: completar RELEASE_NOTES para v0.4.0</td>
+      <td>3</td>
+      <td>🔄 In progress</td>
+      <td>DoD verificado</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Total comprometido</strong>: 22 pts ✅ <strong>Todos completados</strong></p>
+
+<h3>Plantilla para futuros Sprint Backlog</h3>
+
+<pre><code class="language-markdown">## Sprint [N]
+
+**Período**: Semana [X]–[Y] (Año [Z])
+**Sprint Goal**: &quot;[objetivo único]&quot;
+**Capacity**: [N] pts (Focus factor × días × devs)
+
+### Sprint Backlog
+
+| ID | User Story | Pts | Estado | DoD |
+|----|-----------|:---:|:------:|:---:|
+| US-NNN | [Descripción] | [ ] | [ ] | [ ] |
+
+**Total comprometido**: [N] pts | **Completado**: [N] pts
+**Velocity**: [N] pts/sprint
+
+### Sprint Goal alcanzado
+- [ ] Meta 1
+- [ ] Meta 2</code></pre>
+
+<h3>Registro de cambios por Sprint</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Sprint</th>
+      <th>Committed</th>
+      <th>Completed</th>
+      <th>Defectos encontrados</th>
+      <th>Defectos resueltos</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>01</td>
+      <td>18</td>
+      <td>18</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>02</td>
+      <td>18</td>
+      <td>18</td>
+      <td>3</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>03</td>
+      <td>18</td>
+      <td>18</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>04</td>
+      <td>25</td>
+      <td>24</td>
+      <td>4</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>05</td>
+      <td>25</td>
+      <td>25</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>06</td>
+      <td>25</td>
+      <td>26</td>
+      <td>3</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>07</td>
+      <td>32</td>
+      <td>30</td>
+      <td>5</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>08</td>
+      <td>32</td>
+      <td>32</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>09</td>
+      <td>32</td>
+      <td>31</td>
+      <td>4</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>22</td>
+      <td>22</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>22</td>
+      <td>22</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>22</td>
+      <td>22</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td><strong>Total</strong></td>
+      <td><strong>249</strong></td>
+      <td><strong>248</strong></td>
+      <td><strong>29</strong></td>
+      <td><strong>26</strong></td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

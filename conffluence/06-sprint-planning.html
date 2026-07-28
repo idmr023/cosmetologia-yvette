@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>06-sprint-planning</title>
+</head>
+<body>
+<h1>06 — Sprint Planning</h1>
+
+<h2>Formato de la ceremonia</h2>
+
+<p>La Sprint Planning se realiza <strong>cada 4 semanas</strong>, al inicio del Sprint, con duración de <strong>60 minutos</strong>. Participan el PO (+Dev) y el SM.</p>
+
+<h3>Agenda</h3>
+
+<p>1. <strong>Análisis de capacidad</strong> (10 min): el SM revisa la velocity histórica, el Dev confirma disponibilidad del período<br>
+2. <strong>Revisión del Product Backlog</strong> (15 min): el PO presenta las historias top del backlog priorizado, el SM verifica que estén refinadas<br>
+3. <strong>Estimación</strong> (20 min): el Dev estima las historias candidatas usando Planning Poker. Escala Fibonacci (1, 2, 3, 5, 8, 13, 21)<br>
+4. <strong>Sprint Goal</strong> (10 min): se define el objetivo único del Sprint (Sprint Goal)<br>
+5. <strong>Commitment</strong> (5 min): se seleccionan las historias que caben en la capacidad del Sprint, se registran en el Sprint Backlog</p>
+
+<h3>Capacidad del Sprint</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Sprint</th>
+      <th>Días hábiles</th>
+      <th>Focus factor</th>
+      <th>Capacidad (pts)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>01–03 (early)</td>
+      <td>20</td>
+      <td>60%</td>
+      <td>~18 pts</td>
+    </tr>
+    <tr>
+      <td>04–08 (steady)</td>
+      <td>20</td>
+      <td>80%</td>
+      <td>~25 pts</td>
+    </tr>
+    <tr>
+      <td>09–11 (peak)</td>
+      <td>20</td>
+      <td>90%</td>
+      <td>~32 pts</td>
+    </tr>
+    <tr>
+      <td>12 (cierre)</td>
+      <td>20</td>
+      <td>70%</td>
+      <td>~22 pts</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Focus factor menor al inicio por curva de aprendizaje del stack (Next.js, Drizzle, Neon).</strong></p>
+
+<h3>Planning Poker (adaptación solitaria)</h3>
+
+<p>Al ser 1 Dev, la estimación se hace en 2 rondas:</p>
+
+<p>1. <strong>Primera ronda</strong>: el Dev estima sin consultar referencias, registra su número en secreto<br>
+2. <strong>Segunda ronda</strong>: si la estimación difiere > 2 niveles de Fibonacci del Sprint anterior similar, se discute con el SM y se re-estima</p>
+
+<p>Esto evita el sesgo de "siempre 8" y fuerza una reflexión realista.</p>
+
+<h3>Sprint Goal — ejemplos</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Sprint</th>
+      <th>Sprint Goal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Sprint 01</td>
+      <td>"Establecer la base técnica y la presencia web del centro"</td>
+    </tr>
+    <tr>
+      <td>Sprint 04</td>
+      <td>"Separar el backend en un servicio independiente sin romper funcionalidad existente"</td>
+    </tr>
+    <tr>
+      <td>Sprint 07</td>
+      <td>"Permitir que los clientes se agenden sin intervención del staff"</td>
+    </tr>
+    <tr>
+      <td>Sprint 12</td>
+      <td>"Cerrar deuda técnica y preparar el producto para entrega final"</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

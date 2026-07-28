@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useMemo } from "react";
+import { useCrud } from "@/hooks/useCrud";
 
 export type InventoryType = "uso" | "venta";
 
@@ -24,90 +25,36 @@ interface UseInventoryReturn {
   setFilter: (v: InventoryType | "all") => void;
   total: number;
   lowStockCount: number;
-  create: (data: Partial<InventoryItem>) => Promise<void>;
-  update: (id: string, data: Partial<InventoryItem>) => Promise<void>;
+  create: (data: Record<string, unknown>) => Promise<void>;
+  update: (id: string, data: Record<string, unknown>) => Promise<void>;
   remove: (id: string) => Promise<void>;
 }
 
 export function useInventory(): UseInventoryReturn {
-  const [items, setItems] = useState<InventoryItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const crud = useCrud<InventoryItem>("/api/inventory");
   const [filter, setFilter] = useState<InventoryType | "all">("all");
 
-  const fetchItems = useCallback(async () => {
-    try {
-      const res = await fetch("/api/inventory");
-      if (!res.ok) throw new Error("Error al cargar inventario");
-      const data = await res.json();
-      setItems(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Error desconocido");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchItems();
-  }, [fetchItems]);
-
   const filtered = useMemo(() => {
-    if (filter === "all") return items;
-    return items.filter((i) => i.type === filter);
-  }, [items, filter]);
+    if (filter === "all") return crud.data;
+    return crud.data.filter((i) => i.type === filter);
+  }, [crud.data, filter]);
 
   const lowStock = useMemo(
-    () => items.filter((i) => i.stockQty <= i.minStock),
-    [items],
-  );
-
-  const create = useCallback(
-    async (data: Partial<InventoryItem>) => {
-      const res = await fetch("/api/inventory", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error("Error al crear producto");
-      await fetchItems();
-    },
-    [fetchItems],
-  );
-
-  const update = useCallback(
-    async (id: string, data: Partial<InventoryItem>) => {
-      const res = await fetch(`/api/inventory/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error("Error al actualizar producto");
-      await fetchItems();
-    },
-    [fetchItems],
-  );
-
-  const remove = useCallback(
-    async (id: string) => {
-      const res = await fetch(`/api/inventory/${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Error al eliminar producto");
-      await fetchItems();
-    },
-    [fetchItems],
+    () => crud.data.filter((i) => i.stockQty <= i.minStock),
+    [crud.data],
   );
 
   return {
     items: filtered,
     lowStock,
-    loading,
-    error,
+    loading: crud.loading,
+    error: crud.error,
     filter,
     setFilter,
-    total: items.length,
+    total: crud.data.length,
     lowStockCount: lowStock.length,
-    create,
-    update,
-    remove,
+    create: crud.create as unknown as UseInventoryReturn["create"],
+    update: crud.update as unknown as UseInventoryReturn["update"],
+    remove: crud.remove,
   };
 }

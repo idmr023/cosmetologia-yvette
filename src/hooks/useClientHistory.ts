@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { apiFetch } from "@/lib/api";
 
 export interface ClientHistoryItem {
   id: string;
@@ -21,7 +22,7 @@ export function useClientHistory(clientId: string | null) {
     if (!clientId) return;
     setLoading(true);
     try {
-      const res = await fetch(`/api/clients/${clientId}/history`);
+      const res = await apiFetch(`/api/clients/${clientId}/history`);
       if (!res.ok) throw new Error("Error al cargar historial");
       const data = await res.json();
       setHistory(data);

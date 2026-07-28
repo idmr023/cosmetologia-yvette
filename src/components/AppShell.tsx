@@ -1,21 +1,34 @@
 "use client";
 
-import { SessionProvider } from "next-auth/react";
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { AuthGuard } from "@/components/AuthGuard";
 import { BottomNav } from "@/components/navigation/BottomNav";
 import { SideNav } from "@/components/navigation/SideNav";
 import { Sheet } from "@/components/ui/Sheet";
+import { NetworkStatus } from "@/components/NetworkStatus";
+import { useSyncStore } from "@/stores/syncStore";
 
 function RoleShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const loadFromDb = useSyncStore((s) => s.loadFromDb);
 
-  let role: "admin" | "colaborador" = "admin";
+  useEffect(() => {
+    loadFromDb();
+    const onOnline = () => useSyncStore.getState().process();
+    window.addEventListener("online", onOnline);
+    return () => window.removeEventListener("online", onOnline);
+  }, [loadFromDb]);
+
+  let role: "admin" | "colaborador" | "cliente" = "admin";
   let allowedRoles: ("admin" | "colaborador" | "cliente")[] = ["admin"];
 
   if (pathname.startsWith("/colaborador")) {
     role = "colaborador";
     allowedRoles = ["colaborador", "admin"];
+  } else if (pathname.startsWith("/cliente")) {
+    role = "cliente";
+    allowedRoles = ["cliente", "admin"];
   }
 
   return (
@@ -30,14 +43,11 @@ function RoleShell({ children }: { children: React.ReactNode }) {
       </div>
       <BottomNav role={role} />
       <Sheet />
+      <NetworkStatus />
     </>
   );
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  return (
-    <SessionProvider>
-      <RoleShell>{children}</RoleShell>
-    </SessionProvider>
-  );
+  return <RoleShell>{children}</RoleShell>;
 }

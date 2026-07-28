@@ -1,10 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Save, Loader2, Search } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { formatCurrency } from "@/lib/utils";
+import { appointmentSchema, type AppointmentFormData } from "@/lib/schemas";
+import { apiFetch } from "@/lib/api";
 
 interface ServiceOpt {
   id: string;
@@ -24,15 +28,17 @@ interface ClientOpt {
   id: string;
   firstName: string;
   lastName: string;
+  dni: string | null;
   phone: string;
 }
 
 interface AppointmentFormProps {
   onSave: (data: {
     clientId: string;
-    serviceId: string;
+    serviceIds: string[];
     colaboradorId: string;
     startAt: string;
+    endAt: string;
     notes: string;
   }) => Promise<void>;
   onCancel: () => void;
@@ -45,50 +51,80 @@ export function AppointmentForm({ onSave, onCancel, loading }: AppointmentFormPr
   const [clients, setClients] = useState<ClientOpt[]>([]);
   const [loadingData, setLoadingData] = useState(true);
 
-  const [serviceId, setServiceId] = useState("");
-  const [colaboradorId, setColaboradorId] = useState("");
-  const [startAt, setStartAt] = useState("");
-  const [notes, setNotes] = useState("");
-
   // Cliente: búsqueda o crear nuevo
   const [search, setSearch] = useState("");
   const [selectedClient, setSelectedClient] = useState<ClientOpt | null>(null);
   const [newName, setNewName] = useState("");
+  const [newDni, setNewDni] = useState("");
   const [newPhone, setNewPhone] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setValue,
+  } = useForm<AppointmentFormData>({
+    resolver: zodResolver(appointmentSchema),
+    defaultValues: {
+      clientId: "",
+      serviceIds: [],
+      colaboradorId: "",
+      startAt: "",
+      notes: "",
+    },
+  });
+
+  const selectedServiceIds = watch("serviceIds");
+
+  const totalDuration = useMemo(() => {
+    return services
+      .filter((s) => selectedServiceIds.includes(s.id))
+      .reduce((sum, s) => sum + s.durationMin, 0);
+  }, [services, selectedServiceIds]);
 
   useEffect(() => {
     Promise.all([
-      fetch("/api/services").then((r) => r.json()),
-      fetch("/api/colaboradores").then((r) => r.json()),
-      fetch("/api/clients").then((r) => r.json()),
+      apiFetch("/api/services").then((r) => r.json()),
+      apiFetch("/api/colaboradores").then((r) => r.json()),
+      apiFetch("/api/clients").then((r) => r.json()),
     ])
       .then(([svc, col, cli]) => {
-        setServices(svc);
-        setColaboradores(col);
-        setClients(cli);
+        setServices(svc.data ?? svc);
+        setColaboradores(col.data ?? col);
+        setClients(cli.data ?? cli);
       })
       .finally(() => setLoadingData(false));
   }, []);
 
+  function toggleService(id: string) {
+    const current = selectedServiceIds ?? [];
+    if (current.includes(id)) {
+      setValue("serviceIds", current.filter((s) => s !== id), { shouldValidate: true });
+    } else {
+      setValue("serviceIds", [...current, id], { shouldValidate: true });
+    }
+  }
+
   const filteredClients = clients.filter(
     (c) =>
       `${c.firstName} ${c.lastName}`.toLowerCase().includes(search.toLowerCase()) ||
+      (c.dni?.includes(search) ?? false) ||
       c.phone.includes(search),
   );
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function onSubmit(data: AppointmentFormData) {
     let clientId = selectedClient?.id;
 
-    // Crear cliente si no existe
-    if (!clientId && newName.trim() && newPhone.trim()) {
+    if (!clientId && newName.trim() && /^\d{8}$/.test(newDni) && newPhone.trim()) {
       try {
-        const res = await fetch("/api/clients", {
+        const res = await apiFetch("/api/clients", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             firstName: newName.split(" ")[0],
             lastName: newName.split(" ").slice(1).join(" ") || "Cliente",
+            dni: newDni,
             phone: newPhone,
           }),
         });
@@ -97,18 +133,23 @@ export function AppointmentForm({ onSave, onCancel, loading }: AppointmentFormPr
           clientId = created.id;
         }
       } catch {
-        // error handled by hook
+        // error handled by parent
       }
     }
 
-    if (!clientId || !serviceId || !colaboradorId || !startAt) return;
+    if (!clientId) return;
+
+    const start = new Date(data.startAt);
+    const end = new Date(start.getTime() + totalDuration * 60_000);
+    const endAt = end.toISOString();
 
     await onSave({
       clientId,
-      serviceId,
-      colaboradorId,
-      startAt,
-      notes,
+      serviceIds: data.serviceIds,
+      colaboradorId: data.colaboradorId,
+      startAt: data.startAt,
+      endAt,
+      notes: data.notes ?? "",
     });
   }
 
@@ -120,10 +161,8 @@ export function AppointmentForm({ onSave, onCancel, loading }: AppointmentFormPr
     );
   }
 
-  const canSubmit = (selectedClient || (newName.trim() && newPhone.trim())) && serviceId && colaboradorId && startAt;
-
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <h2 className="text-lg font-semibold text-ink">Nueva cita</h2>
 
       {/* Cliente */}
@@ -148,6 +187,7 @@ export function AppointmentForm({ onSave, onCancel, loading }: AppointmentFormPr
                     type="button"
                     onClick={() => {
                       setSelectedClient(c);
+                      setValue("clientId", c.id, { shouldValidate: true });
                       setSearch("");
                     }}
                     className="flex w-full items-center gap-2 px-3 py-2.5 text-left text-sm hover:bg-neutral-50"
@@ -171,6 +211,14 @@ export function AppointmentForm({ onSave, onCancel, loading }: AppointmentFormPr
                 onChange={(e) => setNewName(e.target.value)}
               />
               <Input
+                id="apt-dni"
+                placeholder="DNI (8 dígitos)"
+                inputMode="numeric"
+                maxLength={8}
+                value={newDni}
+                onChange={(e) => setNewDni(e.target.value.replace(/\D/g, ""))}
+              />
+              <Input
                 id="apt-phone"
                 placeholder="Teléfono"
                 type="tel"
@@ -189,7 +237,10 @@ export function AppointmentForm({ onSave, onCancel, loading }: AppointmentFormPr
             </div>
             <button
               type="button"
-              onClick={() => setSelectedClient(null)}
+              onClick={() => {
+                setSelectedClient(null);
+                setValue("clientId", "", { shouldValidate: true });
+              }}
               className="text-xs text-gold hover:underline"
             >
               Cambiar
@@ -198,29 +249,40 @@ export function AppointmentForm({ onSave, onCancel, loading }: AppointmentFormPr
         )}
       </div>
 
-      {/* Servicio */}
+      {/* Servicios (multi-select) */}
       <div className="flex flex-col gap-1.5">
-        <label className="text-sm font-medium text-neutral-700">Servicio</label>
-        <select
-          value={serviceId}
-          onChange={(e) => setServiceId(e.target.value)}
-          className="min-h-touch w-full rounded-xl border border-neutral-300 bg-white px-4 text-base text-ink focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
-        >
-          <option value="">Seleccionar servicio</option>
-          {services.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name} — {formatCurrency(s.price)} ({s.durationMin} min)
-            </option>
-          ))}
-        </select>
+        <label className="text-sm font-medium text-neutral-700">
+          Servicios {totalDuration > 0 && <span className="text-neutral-400">— {totalDuration} min total</span>}
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {services.map((s) => {
+            const selected = selectedServiceIds.includes(s.id);
+            return (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => toggleService(s.id)}
+                className={`rounded-full border px-3.5 py-2 text-sm transition-colors ${
+                  selected
+                    ? "border-gold bg-gold/10 text-gold"
+                    : "border-neutral-300 bg-white text-neutral-700 hover:border-neutral-400"
+                }`}
+              >
+                {s.name} — {formatCurrency(s.price)}
+              </button>
+            );
+          })}
+        </div>
+        {errors.serviceIds && (
+          <p className="text-sm text-red-600">{errors.serviceIds.message}</p>
+        )}
       </div>
 
       {/* Colaboradora */}
       <div className="flex flex-col gap-1.5">
         <label className="text-sm font-medium text-neutral-700">Colaboradora</label>
         <select
-          value={colaboradorId}
-          onChange={(e) => setColaboradorId(e.target.value)}
+          {...register("colaboradorId")}
           className="min-h-touch w-full rounded-xl border border-neutral-300 bg-white px-4 text-base text-ink focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
         >
           <option value="">Seleccionar colaboradora</option>
@@ -230,6 +292,9 @@ export function AppointmentForm({ onSave, onCancel, loading }: AppointmentFormPr
             </option>
           ))}
         </select>
+        {errors.colaboradorId && (
+          <p className="text-sm text-red-600">{errors.colaboradorId.message}</p>
+        )}
       </div>
 
       {/* Fecha y hora */}
@@ -237,17 +302,15 @@ export function AppointmentForm({ onSave, onCancel, loading }: AppointmentFormPr
         id="apt-datetime"
         label="Fecha y hora"
         type="datetime-local"
-        value={startAt}
-        onChange={(e) => setStartAt(e.target.value)}
-        required
+        error={errors.startAt?.message}
+        {...register("startAt")}
       />
 
       {/* Notas */}
       <div className="flex flex-col gap-1.5">
         <label className="text-sm font-medium text-neutral-700">Notas</label>
         <textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
+          {...register("notes")}
           rows={2}
           placeholder="Notas opcionales..."
           className="min-h-touch w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-base text-ink placeholder:text-neutral-400 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/20"
@@ -258,7 +321,7 @@ export function AppointmentForm({ onSave, onCancel, loading }: AppointmentFormPr
         <Button type="button" onClick={onCancel} variant="outline" fullWidth disabled={loading}>
           Cancelar
         </Button>
-        <Button type="submit" fullWidth disabled={loading || !canSubmit}>
+        <Button type="submit" fullWidth disabled={loading}>
           {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
           Crear cita
         </Button>

@@ -95,23 +95,17 @@ export default function DashboardPage() {
         onSave={async (data) => {
           setSaving(true);
           try {
-            const servicesList = await fetch("/api/services").then(r => r.json()).catch(() => []);
-            const svc = servicesList.find((s: { id: string }) => s.id === data.serviceId);
-            const durationMin = svc?.durationMin ?? 60;
-            const start = new Date(data.startAt);
-            const end = new Date(start.getTime() + durationMin * 60000);
-
             const res = await fetch("/api/appointments", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 clientId: data.clientId,
                 colaboradorId: data.colaboradorId,
-                startAt: start.toISOString(),
-                endAt: end.toISOString(),
+                startAt: data.startAt,
+                endAt: data.endAt,
                 notes: data.notes,
                 status: "pendiente",
-                serviceIds: [data.serviceId],
+                serviceIds: data.serviceIds,
               }),
             });
             if (res.ok) sheet.close();

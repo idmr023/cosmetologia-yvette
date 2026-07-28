@@ -9,6 +9,7 @@ interface ClientFormProps {
   initial?: {
     firstName: string;
     lastName: string;
+    dni: string | null;
     phone: string;
     email: string;
     notes: string;
@@ -16,6 +17,7 @@ interface ClientFormProps {
   onSave: (data: {
     firstName: string;
     lastName: string;
+    dni: string;
     phone: string;
     email: string;
     notes: string;
@@ -27,16 +29,18 @@ interface ClientFormProps {
 export function ClientForm({ initial, onSave, onCancel, loading }: ClientFormProps) {
   const [firstName, setFirstName] = useState(initial?.firstName ?? "");
   const [lastName, setLastName] = useState(initial?.lastName ?? "");
+  const [dni, setDni] = useState(initial?.dni ?? "");
   const [phone, setPhone] = useState(initial?.phone ?? "");
   const [email, setEmail] = useState(initial?.email ?? "");
   const [notes, setNotes] = useState(initial?.notes ?? "");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!firstName.trim() || !lastName.trim() || !phone.trim()) return;
+    if (!firstName.trim() || !lastName.trim() || !phone.trim() || !/^\d{8}$/.test(dni)) return;
     await onSave({
       firstName: firstName.trim(),
       lastName: lastName.trim(),
+      dni,
       phone: phone.trim(),
       email: email.trim(),
       notes: notes.trim(),
@@ -67,6 +71,19 @@ export function ClientForm({ initial, onSave, onCancel, loading }: ClientFormPro
           required
         />
       </div>
+
+      <Input
+        id="c-dni"
+        label="DNI"
+        type="text"
+        inputMode="numeric"
+        maxLength={8}
+        value={dni}
+        onChange={(e) => setDni(e.target.value.replace(/\D/g, ""))}
+        placeholder="12345678"
+        disabled={Boolean(initial?.dni)}
+        required
+      />
 
       <Input
         id="c-phone"
@@ -102,7 +119,7 @@ export function ClientForm({ initial, onSave, onCancel, loading }: ClientFormPro
         <Button type="button" onClick={onCancel} variant="outline" fullWidth disabled={loading}>
           Cancelar
         </Button>
-        <Button type="submit" fullWidth disabled={loading || !firstName.trim() || !lastName.trim() || !phone.trim()}>
+        <Button type="submit" fullWidth disabled={loading || !firstName.trim() || !lastName.trim() || !phone.trim() || !/^\d{8}$/.test(dni)}>
           {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
           {initial ? "Guardar cambios" : "Crear cliente"}
         </Button>

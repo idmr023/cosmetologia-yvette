@@ -1,21 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { AlertTriangle, Plus, Loader2 } from "lucide-react";
-import { TopBar } from "@/components/navigation/TopBar";
+import { AlertTriangle, Plus } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Sheet, useSheetStore } from "@/components/ui/Sheet";
-import { ConfirmDelete } from "@/components/modals/ConfirmDelete";
+import { PageShell } from "@/components/ui/PageShell";
+import { FilterChips } from "@/components/ui/FilterChips";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { useSheetStore } from "@/components/ui/Sheet";
 import { InventoryForm } from "@/components/modals/InventoryForm";
 import { InventoryCard } from "@/components/cards/InventoryCard";
 import { useInventory, type InventoryType, type InventoryItem } from "@/hooks/useInventory";
-import { cn } from "@/lib/utils";
 
-const FILTERS: { value: InventoryType | "all"; label: string }[] = [
-  { value: "all", label: "Todos" },
-  { value: "uso", label: "Uso interno" },
-  { value: "venta", label: "Venta" },
+const FILTERS = [
+  { value: "all" as const, label: "Todos" },
+  { value: "uso" as const, label: "Uso interno" },
+  { value: "venta" as const, label: "Venta" },
 ];
 
 export default function InventarioPage() {
@@ -72,10 +72,7 @@ export default function InventarioPage() {
     );
   }
 
-  async function handleSave(
-    data: { name: string; type: "uso" | "venta"; category: string; stockQty: number; minStock: number; unitPrice: string; supplier: string },
-    id?: string,
-  ) {
+  async function handleSave(data: Record<string, unknown>, id?: string) {
     try {
       if (id) {
         await update(id, data);
@@ -102,14 +99,14 @@ export default function InventarioPage() {
 
   return (
     <>
-      <TopBar title="Inventario" />
-
-      <div className="mx-auto max-w-2xl space-y-4 p-4 md:max-w-4xl">
-        <Button fullWidth size="lg" onClick={openCreate}>
-          <Plus className="h-5 w-5" />
-          Nuevo producto
-        </Button>
-
+      <PageShell
+        title="Inventario"
+        action={{ label: "Nuevo producto", icon: Plus, onClick: openCreate }}
+        filters={<FilterChips options={FILTERS} value={filter} onChange={(v) => setFilter(v as InventoryType | "all")} />}
+        loading={loading}
+        empty={items.length === 0}
+        emptyMessage="No hay productos en este filtro"
+      >
         {lowStockCount > 0 && (
           <Card className="flex items-center gap-3 border-red-200 bg-red-50">
             <AlertTriangle className="h-5 w-5 shrink-0 text-red-600" />
@@ -119,61 +116,25 @@ export default function InventarioPage() {
           </Card>
         )}
 
-        <div className="flex gap-2 overflow-x-auto pb-1">
-          {FILTERS.map((f) => (
-            <button
-              key={f.value}
-              onClick={() => setFilter(f.value)}
-              className={cn(
-                "min-h-touch whitespace-nowrap rounded-full px-4 text-sm font-medium transition-colors",
-                filter === f.value
-                  ? "bg-ink text-white"
-                  : "border border-neutral-200 text-neutral-600 hover:border-ink",
-              )}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
+        {items.map((item) => (
+          <InventoryCard
+            key={item.id}
+            item={item}
+            onEdit={() => openEdit(item)}
+            onRestock={() => openRestock(item)}
+            onDelete={() => setDeleting(item)}
+          />
+        ))}
+      </PageShell>
 
-        {loading ? (
-          <div className="flex justify-center py-8">
-            <Loader2 className="h-8 w-8 animate-spin text-gold" />
-          </div>
-        ) : items.length === 0 ? (
-          <div className="rounded-2xl border border-neutral-200 bg-white py-8 text-center text-sm text-neutral-400">
-            No hay productos en este filtro
-          </div>
-        ) : (
-          <div className="flex flex-col gap-3">
-            {items.map((item) => (
-              <InventoryCard
-                key={item.id}
-                item={item}
-                onEdit={() => openEdit(item)}
-                onRestock={() => openRestock(item)}
-                onDelete={() => setDeleting(item)}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      <Sheet />
-
-      {deleting && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 pb-12 md:items-center">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-2xl">
-            <ConfirmDelete
-              title="Eliminar producto"
-              message={`¿Eliminar "${deleting.name}"? Esta acción no se puede deshacer.`}
-              onConfirm={handleDelete}
-              onCancel={() => setDeleting(null)}
-              loading={confirmLoading}
-            />
-          </div>
-        </div>
-      )}
+      <ConfirmDialog
+        open={!!deleting}
+        title="Eliminar producto"
+        message={`¿Eliminar "${deleting?.name}"? Esta acción no se puede deshacer.`}
+        onConfirm={handleDelete}
+        onCancel={() => setDeleting(null)}
+        loading={confirmLoading}
+      />
     </>
   );
 }
@@ -211,7 +172,7 @@ function RestockForm({
           Cancelar
         </Button>
         <Button type="submit" fullWidth disabled={loading || Number(qty) <= 0}>
-          {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Agregar"}
+          {loading ? "Agregando..." : "Agregar"}
         </Button>
       </div>
     </form>

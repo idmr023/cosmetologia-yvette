@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { MoreVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface MenuItem {
+export interface MenuItem {
   label: string;
   icon?: React.ComponentType<{ className?: string }>;
   onClick: () => void;
