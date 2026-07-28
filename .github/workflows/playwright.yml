@@ -72,6 +72,7 @@ jobs:
           DATABASE_URL: postgres://test:test@localhost:5432/pws_test
 
       - name: Run Playwright tests
+        working-directory: frontend
         run: npm run test:e2e
         env:
           DATABASE_URL: postgres://test:test@localhost:5432/pws_test
