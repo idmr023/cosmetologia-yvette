@@ -1,0 +1,1 @@
+{"version":3,"file":"serviceTools.d.ts","sourceRoot":"","sources":["../../../src/telegram/tools/serviceTools.ts"],"names":[],"mappings":"AAGA,MAAM,WAAW,WAAW;IAC1B,EAAE,EAAE,MAAM,CAAC;IACX,IAAI,EAAE,MAAM,CAAC;IACb,QAAQ,EAAE,MAAM,CAAC;IACjB,WAAW,EAAE,MAAM,CAAC;IACpB,KAAK,EAAE,MAAM,CAAC;IACd,WAAW,EAAE,MAAM,GAAG,IAAI,CAAC;CAC5B;AAED,wBAAsB,kBAAkB,IAAI,OAAO,CAAC,WAAW,EAAE,CAAC,CAajE"}

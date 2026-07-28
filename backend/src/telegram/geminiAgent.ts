@@ -79,7 +79,7 @@ function trimHistory(): void {
   while (pairs > MAX_HISTORY) {
     const firstUser = conversationHistory.findIndex((m) => m.role === "user");
     if (firstUser === -1) break;
-    const firstModel = conversationHistory.findIndex((m) => m.role === "model" && m.role !== "function");
+    const firstModel = conversationHistory.findIndex((m) => m.role === "model");
     if (firstModel === -1) { conversationHistory.splice(firstUser, 1); break; }
     if (firstModel > firstUser) {
       conversationHistory.splice(firstUser, firstModel - firstUser + 1);
