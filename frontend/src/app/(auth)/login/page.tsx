@@ -58,41 +58,60 @@ function LoginInner() {
     setError("");
     setLoading(true);
 
-    if (!mfaRequired) {
-      const needsMfa = await checkMfa();
-      if (needsMfa) {
-        setMfaRequired(true);
-        setLoading(false);
-        return;
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Timeout")), 7000)
+    );
+
+    try {
+      const loginPromise = (async () => {
+        if (!mfaRequired) {
+          const needsMfa = await checkMfa();
+          if (needsMfa) {
+            setMfaRequired(true);
+            setLoading(false);
+            return;
+          }
+        }
+
+        const result = await signIn("credentials", {
+          email,
+          password,
+          turnstileToken,
+          ...(mfaCode ? { mfaCode } : {}),
+          redirect: false,
+        });
+
+        if (result?.error) {
+          throw new Error("Invalid credentials");
+        }
+
+        const session = await getSession();
+        const role = session?.user?.role ?? "cliente";
+        if (session?.accessToken) setAccessToken(session.accessToken);
+        if (session?.refreshToken) setRefreshToken(session.refreshToken);
+        setRole(role);
+        const fallback = ROLE_REDIRECTS[role] ?? "/";
+        if (callbackUrl && callbackUrl.startsWith("/") && !callbackUrl.startsWith("//")) {
+          router.push(callbackUrl);
+        } else {
+          router.push(fallback);
+        }
+        router.refresh();
+      })();
+
+      await Promise.race([loginPromise, timeoutPromise]);
+    } catch (err: unknown) {
+      setLoading(false);
+      const errorObj = err as Error;
+      if (errorObj.message === "Timeout") {
+        setError("El inicio de sesión demoró más de 7s. Por favor, ingresa tus datos de nuevo.");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      } else {
+        setError("Email o contraseña incorrectos");
       }
     }
-
-    const result = await signIn("credentials", {
-      email,
-      password,
-      turnstileToken,
-      ...(mfaCode ? { mfaCode } : {}),
-      redirect: false,
-    });
-
-    if (result?.error) {
-      setError("Email o contraseña incorrectos");
-      setLoading(false);
-      return;
-    }
-
-    const session = await getSession();
-    const role = session?.user?.role ?? "cliente";
-    if (session?.accessToken) setAccessToken(session.accessToken);
-    if (session?.refreshToken) setRefreshToken(session.refreshToken);
-    setRole(role);
-    const fallback = ROLE_REDIRECTS[role] ?? "/";
-    if (callbackUrl && callbackUrl.startsWith("/") && !callbackUrl.startsWith("//")) {
-      router.push(callbackUrl);
-    } else {
-      router.push(fallback);
-    }
-    router.refresh();
   }
 
   return (
