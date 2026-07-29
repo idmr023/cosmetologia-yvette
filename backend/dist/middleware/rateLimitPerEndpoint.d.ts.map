@@ -1,0 +1,1 @@
+{"version":3,"file":"rateLimitPerEndpoint.d.ts","sourceRoot":"","sources":["../../src/middleware/rateLimitPerEndpoint.ts"],"names":[],"mappings":"AAEA,eAAO,MAAM,WAAW,sDAMtB,CAAC;AAEH,eAAO,MAAM,UAAU,sDAUrB,CAAC;AAEH,eAAO,MAAM,aAAa,sDAMxB,CAAC"}

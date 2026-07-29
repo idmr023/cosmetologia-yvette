@@ -2,7 +2,6 @@ import type { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { eq } from "drizzle-orm";
-import argon2 from "argon2";
 import bcrypt from "bcryptjs";
 import { verify as verifyTotp } from "otplib";
 import { db, schema } from "./db";
@@ -16,9 +15,6 @@ const LOGIN_RATE_LIMIT = { max: 10, windowMs: 15 * 60 * 1000 };
 
 async function verifyPasswordFallback(password: string, hash: string | null): Promise<boolean> {
   if (!hash) return false;
-  if (hash.startsWith("$argon2")) {
-    try { return await argon2.verify(hash, password); } catch { return false; }
-  }
   return bcrypt.compare(password, hash);
 }
 
@@ -45,9 +41,10 @@ export const authOptions: NextAuthOptions = {
         const userAgent = await getUserAgent();
         const email = credentials.email.toLowerCase().trim();
 
-        // Try backend first (dev mode with Express)
+        // Try backend first (Express on Render)
         try {
-          const res = await fetch(`${process.env.NEXTAUTH_URL}/api/auth/login`, {
+          const backendUrl = process.env.EXPRESS_BACKEND_URL || process.env.NEXTAUTH_URL;
+          const res = await fetch(`${backendUrl}/api/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -99,7 +96,6 @@ export const authOptions: NextAuthOptions = {
           .where(eq(schema.users.email, email));
 
         if (!user?.passwordHash) {
-          try { await argon2.hash("dummy"); } catch {}
           await recordFailedAttempt(email, ip);
           await logAuthEvent({ action: "LOGIN_USER_NOT_FOUND", email, ip, userAgent, success: false });
           return null;

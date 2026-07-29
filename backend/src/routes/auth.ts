@@ -1,5 +1,4 @@
 import { Router, Request, Response, NextFunction } from "express";
-import argon2 from "argon2";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
@@ -11,7 +10,6 @@ import { verifyTurnstile } from "../middleware/turnstile";
 const router = Router();
 
 const ARGON2_OPTIONS = {
-  type: argon2.argon2id,
   memoryCost: 19456,
   timeCost: 2,
   parallelism: 1,
@@ -88,14 +86,11 @@ async function recordLoginAttempt(
 
 async function verifyPassword(password: string, hash: string | null): Promise<boolean> {
   if (!hash) return false;
-  if (hash.startsWith("$argon2")) {
-    return argon2.verify(hash, password);
-  }
   return bcrypt.compare(password, hash);
 }
 
 async function hashPassword(password: string): Promise<string> {
-  return argon2.hash(password, ARGON2_OPTIONS);
+  return bcrypt.hash(password, 10);
 }
 
 function generateTokens(user: {
@@ -136,19 +131,7 @@ async function getClientId(userId: string): Promise<string | undefined> {
 }
 
 async function tryMigrateToArgon2(userId: string, password: string): Promise<void> {
-  const [user] = await db
-    .select({ passwordHash: schema.users.passwordHash })
-    .from(schema.users)
-    .where(eq(schema.users.id, userId))
-    .limit(1);
-
-  if (user?.passwordHash && !user.passwordHash.startsWith("$argon2")) {
-    const newHash = await hashPassword(password);
-    await db
-      .update(schema.users)
-      .set({ passwordHash: newHash })
-      .where(eq(schema.users.id, userId));
-  }
+  // No-op for bcrypt migration
 }
 
 router.post(
@@ -181,8 +164,8 @@ router.post(
         .limit(1);
 
       if (!user || !user.passwordHash) {
-        // Dummy argon2 hash — anti user-enumeration
-        try { await argon2.hash("dummy", ARGON2_OPTIONS); } catch {}
+        // Dummy hash — anti user-enumeration
+        try { await bcrypt.hash("dummy", 10); } catch {}
         await recordLoginAttempt(body.email, req.ip || "", false);
         res.status(401).json({ error: "Credenciales inválidas." });
         return;

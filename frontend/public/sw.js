@@ -86,6 +86,8 @@ async function cacheFirst(request) {
   const cached = await caches.match(request);
   if (cached) return cached;
   try {
+    const url = new URL(request.url);
+    if (!url.protocol.startsWith('http')) return fetch(request);
     const response = await fetch(request);
     if (response.ok) {
       const cache = await caches.open(STATIC_CACHE);
